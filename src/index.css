@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Teko';
+    font-style: normal;
+    font-display: swap;
+    src: url(./assets/fonts/Teko.ttf) format('truetype');
+  }
+}
