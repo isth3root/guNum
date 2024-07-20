@@ -153,7 +153,7 @@ const LeaderBoard = () => {
             {sortedUsers.map((userItem, index) => (
               <li
                 key={userItem.username}
-                className={`text-5xl border-b-2 py-2 flex gap-5 w-full justify-around ${
+                className={`text-3xl border-b-2 py-2 flex gap-5 w-full justify-around ${
                   user?.username === userItem.username ? "text-red-500" : ""
                 }
               ${themes === "PINK" ? "border-black" : ""} 
