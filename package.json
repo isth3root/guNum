@@ -3,9 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://isth3root.github.io/guNumFront/",
+  "homepage": "https://isth3root.github.io/guNumFront",
   "scripts": {
-    "predeploy": "bun run build",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "tsc -b && vite build",

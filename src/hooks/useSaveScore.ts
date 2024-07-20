@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import axiosInstance from '../utils/axiosInstance.ts';
+import { useState } from "react";
+import axiosInstance from "../utils/axiosInstance";
 
 interface User {
   username: string;
@@ -23,27 +23,35 @@ export const useSaveScore = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const saveScore = async (username: string, score: number, difficulty: "EASY" | "MEDIUM" | "HARD"): Promise<User> => {
+  const saveScore = async (
+    username: string,
+    score: number,
+    difficulty: "EASY" | "MEDIUM" | "HARD"
+  ): Promise<User> => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await axiosInstance.post<User>('/hs', {
+      const response = await axiosInstance.post<User>("/hs", {
         username,
         score,
-        difficulty
+        difficulty,
       });
 
       const updatedUser = response.data;
 
       // Retrieve the user data from localStorage
-      const userData = localStorage.getItem('user');
+      const userData = localStorage.getItem("user");
       if (userData) {
         const parsedUserData = JSON.parse(userData);
 
         // Ensure the score object exists
         if (!parsedUserData.score) {
-          parsedUserData.score = { easy: Infinity, medium: Infinity, hard: Infinity };
+          parsedUserData.score = {
+            easy: Infinity,
+            medium: Infinity,
+            hard: Infinity,
+          };
         }
 
         // Update the relevant score based on difficulty
@@ -58,18 +66,20 @@ export const useSaveScore = () => {
             parsedUserData.score.hard = updatedUser.score;
             break;
           default:
-            throw new Error('Invalid difficulty level');
+            throw new Error("Invalid difficulty level");
         }
 
         // Save the updated user data back to localStorage
-        localStorage.setItem('user', JSON.stringify(parsedUserData));
+        localStorage.setItem("user", JSON.stringify(parsedUserData));
       }
 
       return updatedUser;
     } catch (err: any) {
-      console.error('Error during save score:', err);
+      console.error("Error during save score:", err);
       const axiosError = err as AxiosError;
-      setError(axiosError.response ? axiosError.response.data.message : 'Server error');
+      setError(
+        axiosError.response ? axiosError.response.data.message : "Server error"
+      );
       throw err;
     } finally {
       setLoading(false);

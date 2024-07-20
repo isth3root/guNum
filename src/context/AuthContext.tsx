@@ -1,6 +1,6 @@
 // context/AuthContext.tsx
 
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from "react";
 
 type User = {
   username: string;
@@ -8,8 +8,8 @@ type User = {
   score: {
     easy: number;
     medium: number;
-    hard: number
-  }
+    hard: number;
+  };
 };
 
 type ContextType = {
@@ -19,22 +19,22 @@ type ContextType = {
 
 const initialUser: User | null = null;
 
- const AuthContext = createContext<ContextType>({
+const AuthContext = createContext<ContextType>({
   user: initialUser,
   setUser: () => {},
 });
 interface IProps extends React.PropsWithChildren {}
 export const AuthProvider: React.FC<IProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : initialUser;
   });
 
-  useEffect(()=> {
+  useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem("user", JSON.stringify(user));
     }
-  }, [user])
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>

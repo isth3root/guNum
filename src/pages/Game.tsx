@@ -6,25 +6,32 @@ import { Link } from "react-router-dom";
 import type { MenuProps } from "antd";
 import { Dropdown, theme } from "antd";
 
-
 import AuthContext from "../context/AuthContext";
 
 // ========== HOOKS ========== \\
 import { useSaveScore } from "../hooks/useSaveScore";
 import { useDeleteAccount } from "../hooks/useDeleteAccount";
 
-
 const Game = () => {
-  const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(() => {
-  // Get theme from localStorage, fallback to "DARK" if not found or invalid
-  const storedTheme = localStorage.getItem("theme");
-  if (storedTheme === "PINK" || storedTheme === "DARK" || storedTheme === "PURPLE" || storedTheme === "BLUE") {
-    return storedTheme;
-  }
-  return "DARK";
-});
+  const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
+    () => {
+      // Get theme from localStorage, fallback to "DARK" if not found or invalid
+      const storedTheme = localStorage.getItem("theme");
+      if (
+        storedTheme === "PINK" ||
+        storedTheme === "DARK" ||
+        storedTheme === "PURPLE" ||
+        storedTheme === "BLUE"
+      ) {
+        return storedTheme;
+      }
+      return "DARK";
+    }
+  );
 
-  const [difficulty, setDifficulty] = useState<"EASY" | "MEDIUM" | "HARD">("EASY");
+  const [difficulty, setDifficulty] = useState<"EASY" | "MEDIUM" | "HARD">(
+    "EASY"
+  );
 
   // Wrong Numbers
   const [crossedNumbers, setCrossedNumbers] = useState<number[]>([]);
@@ -38,10 +45,10 @@ const Game = () => {
 
   const { user, setUser } = useContext(AuthContext);
 
-  const { saveScore } = useSaveScore()
+  const { saveScore } = useSaveScore();
 
-  const {deleteAccount} = useDeleteAccount()
-  
+  const { deleteAccount } = useDeleteAccount();
+
   const shuffleArray = (array: number[]): number[] => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -67,7 +74,9 @@ const Game = () => {
     }
     const newNumbers = Array.from({ length: maxNumber }, (_, i) => i + 1);
     setNumbers(newNumbers);
-    setShuffledIndices(shuffleArray(Array.from({ length: maxNumber }, (_, i) => i)));
+    setShuffledIndices(
+      shuffleArray(Array.from({ length: maxNumber }, (_, i) => i))
+    );
     setToGuessNumber(Math.floor(Math.random() * maxNumber) + 1);
   }, [difficulty]);
 
@@ -84,8 +93,7 @@ const Game = () => {
       setCrossedNumbers(numbers.filter((num) => num !== clickedNumber));
       setGameOver(true);
       setCorrectGuess(clickedNumber);
-      await sc() 
-      
+      await sc();
     } else {
       // User clicks on wrong Number
       let newCrossedNumbers;
@@ -117,7 +125,9 @@ const Game = () => {
     setGameOver(false);
     setToGuessNumber(Math.floor(Math.random() * numbers.length) + 1);
     setCorrectGuess(null);
-    setShuffledIndices(shuffleArray(Array.from({ length: numbers.length }, (_, i) => i)));
+    setShuffledIndices(
+      shuffleArray(Array.from({ length: numbers.length }, (_, i) => i))
+    );
   };
 
   const handleThemeChange = (themes: "PINK" | "DARK" | "PURPLE" | "BLUE") => {
@@ -127,7 +137,6 @@ const Game = () => {
     localStorage.setItem("theme", themes);
   };
 
-
   const handleDifficultyChange = (difficulty: "EASY" | "MEDIUM" | "HARD") => {
     setDifficulty(difficulty);
     handleNewGame();
@@ -135,8 +144,8 @@ const Game = () => {
 
   const handleLogOut = () => {
     setUser(null);
-    localStorage.removeItem('user')
-  }
+    localStorage.removeItem("user");
+  };
 
   const handleDeleteAccount = async () => {
     handleLogOut();
@@ -151,30 +160,111 @@ const Game = () => {
     }
   };
 
-  const themeItems: MenuProps['items'] = [
-    { key: '1', label: <div className="font-Teko text-xl select-none" onClick={() => handleThemeChange('PINK')}>PINK</div>},
-    { key: '2', label: <div className="font-Teko text-xl select-none" onClick={() => handleThemeChange('DARK')}>DARK</div>},
-    { key: '3', label: <div className="font-Teko text-xl select-none" onClick={() => handleThemeChange('BLUE')}>BLUE</div>},
-    { key: '4', label: <div className="font-Teko text-xl select-none" onClick={() => handleThemeChange('PURPLE')}>PURPLE</div>},
+  const themeItems: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <div
+          className="font-Teko text-xl select-none"
+          onClick={() => handleThemeChange("PINK")}
+        >
+          PINK
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div
+          className="font-Teko text-xl select-none"
+          onClick={() => handleThemeChange("DARK")}
+        >
+          DARK
+        </div>
+      ),
+    },
+    {
+      key: "3",
+      label: (
+        <div
+          className="font-Teko text-xl select-none"
+          onClick={() => handleThemeChange("BLUE")}
+        >
+          BLUE
+        </div>
+      ),
+    },
+    {
+      key: "4",
+      label: (
+        <div
+          className="font-Teko text-xl select-none"
+          onClick={() => handleThemeChange("PURPLE")}
+        >
+          PURPLE
+        </div>
+      ),
+    },
   ];
 
-  const difficultyItems: MenuProps['items'] = [
-    { key: '1', label: <div onClick={() => handleDifficultyChange('EASY')}>EASY</div> },
-    { key: '2', label: <div onClick={() => handleDifficultyChange('MEDIUM')}>MEDIUM</div> },
-    { key: '3', label: <div onClick={() => handleDifficultyChange('HARD')}>HARD</div> },
+  const difficultyItems: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <div onClick={() => handleDifficultyChange("EASY")}>EASY</div>,
+    },
+    {
+      key: "2",
+      label: <div onClick={() => handleDifficultyChange("MEDIUM")}>MEDIUM</div>,
+    },
+    {
+      key: "3",
+      label: <div onClick={() => handleDifficultyChange("HARD")}>HARD</div>,
+    },
   ];
 
-  const contextItems: MenuProps['items'] = [
-    { key: '1', label: <div onClick={() => handleDifficultyChange('EASY')}>New Game: EASY</div> },
-    { key: '2', label: <div onClick={() => handleDifficultyChange('MEDIUM')}>New Game: MEDIUM</div> },
-    { key: '3', label: <div onClick={() => handleDifficultyChange('HARD')}>New Game: HARD</div> },
+  const contextItems: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <div onClick={() => handleDifficultyChange("EASY")}>New Game: EASY</div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div onClick={() => handleDifficultyChange("MEDIUM")}>
+          New Game: MEDIUM
+        </div>
+      ),
+    },
+    {
+      key: "3",
+      label: (
+        <div onClick={() => handleDifficultyChange("HARD")}>New Game: HARD</div>
+      ),
+    },
   ];
 
-  const userItem: MenuProps['items'] = [
-    { key: '1', label: <div className="font-Teko text-xl" onClick={handleLogOut}>LOGOUT</div> },
-    { key: '2', label: <div className="font-Teko text-xl" onClick={handleDeleteAccount}>DELETE ACCOUNT</div>, danger:true },
+  const userItem: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <div className="font-Teko text-xl" onClick={handleLogOut}>
+          LOGOUT
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div className="font-Teko text-xl" onClick={handleDeleteAccount}>
+          DELETE ACCOUNT
+        </div>
+      ),
+      danger: true,
+    },
   ];
-  
+
   const {
     token: { colorBgLayout, colorTextTertiary },
   } = theme.useToken();
@@ -188,44 +278,78 @@ const Game = () => {
           minHeight: "100vh",
         }}
       >
-        
-        <div className={`flex flex-col justify-around min-h-screen 
+        <div
+          className={`flex flex-col justify-around min-h-screen 
         font-Teko items-center gap-5 transition-all duration-500 ease-in-out 
-        ${themes === 'PINK' ? 'bg-[#FFEFEF] text-black' : ''} 
-        ${themes === 'DARK' ? 'bg-[#1A3636] text-white' : ''} 
-        ${themes === 'BLUE' ? 'bg-[#7C73C0] text-white' : ''} 
-        ${themes === 'PURPLE' ? 'bg-[#4A249D] text-white' : ''}
-        `}>
+        ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""} 
+        ${themes === "DARK" ? "bg-[#1A3636] text-white" : ""} 
+        ${themes === "BLUE" ? "bg-[#7C73C0] text-white" : ""} 
+        ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
+        `}
+        >
           <div className="flex flex-col items-center gap-5">
-
-          <div className="flex flex-row-reverse justify-around items-center gap-10 w-full">
-          <Dropdown menu={{ items: themeItems }} trigger={['click']} className="hover:rotate-6">
-              <a onClick={(e) => e.preventDefault()} className="text-3xl cursor-pointer select-none">
-                {themes}
-              </a>
-            </Dropdown>
-            <Dropdown menu={{ items: userItem }} trigger={['click']} className="hover:-translate-y-1">
-              <a onClick={(e) => e.preventDefault()} className="text-3xl cursor-pointer select-none">
-                {user?.username}
-              </a>
-            </Dropdown>
-            <Dropdown menu={{ items: difficultyItems }} trigger={['click']} className="hover:-rotate-6">
-              <a onClick={(e) => e.preventDefault()} className="text-3xl cursor-pointer select-none">
-                {difficulty}
-              </a>
-            </Dropdown>
+            <div className="flex flex-row-reverse justify-around items-center gap-10 w-full">
+              <Dropdown
+                menu={{ items: themeItems }}
+                trigger={["click"]}
+                className="hover:rotate-6"
+              >
+                <a
+                  onClick={(e) => e.preventDefault()}
+                  className="text-3xl cursor-pointer select-none"
+                >
+                  {themes}
+                </a>
+              </Dropdown>
+              <Dropdown
+                menu={{ items: userItem }}
+                trigger={["click"]}
+                className="hover:-translate-y-1"
+              >
+                <a
+                  onClick={(e) => e.preventDefault()}
+                  className="text-3xl cursor-pointer select-none"
+                >
+                  {user?.username}
+                </a>
+              </Dropdown>
+              <Dropdown
+                menu={{ items: difficultyItems }}
+                trigger={["click"]}
+                className="hover:-rotate-6"
+              >
+                <a
+                  onClick={(e) => e.preventDefault()}
+                  className="text-3xl cursor-pointer select-none"
+                >
+                  {difficulty}
+                </a>
+              </Dropdown>
             </div>
-            <Link to={"/leaderboard"} className="text-xl underline mb-10">Leader Board</Link>
+            <Link to={"/leaderboard"} className="text-xl underline mb-10">
+              Leader Board
+            </Link>
           </div>
-          
-          <div className="text-3xl select-none">Find the special <span className="italic tracking-wider uppercase font-bold text-red-500">number</span></div>
+
+          <div className="text-3xl select-none">
+            Find the special{" "}
+            <span className="italic tracking-wider uppercase font-bold text-red-500">
+              number
+            </span>
+          </div>
           <div className="grid grid-cols-5 sm:grid-cols-10 gap-5 text-4xl sm:text-5xl select-none mb-10">
             {shuffledIndices.map((index) => (
               <div key={index}>
                 <p
                   className={`cursor-pointer hover:rotate-12 ${
-                    crossedNumbers.includes(numbers[index]) ? "line-through opacity-5 transition-all duration-1000 ease-in-out" : ""
-                  } ${correctGuess === numbers[index] ? "text-red-500 font-extrabold" : ""}`}
+                    crossedNumbers.includes(numbers[index])
+                      ? "line-through opacity-5 transition-all duration-1000 ease-in-out"
+                      : ""
+                  } ${
+                    correctGuess === numbers[index]
+                      ? "text-red-500 font-extrabold"
+                      : ""
+                  }`}
                   onClick={() => handleClick(index)}
                 >
                   {numbers[index]}
@@ -246,7 +370,7 @@ const Game = () => {
             ${themes === "DARK" ? "bg-white text-black" : ""} 
             ${themes === "BLUE" ? "bg-white text-black" : ""} 
             ${themes === "PURPLE" ? "bg-white text-black" : ""} 
-            `} 
+            `}
             onClick={handleNewGame}
           >
             New Game
