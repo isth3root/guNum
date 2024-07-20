@@ -102,8 +102,8 @@ const SignUp: React.FC<SignUpProps> = () => {
       className={`flex flex-col items-center justify-center font-Teko h-screen ${
         themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""
       } 
-        ${themes === "DARK" ? "bg-[#1A3636] text-white" : ""} 
-        ${themes === "BLUE" ? "bg-[#7C73C0] text-white" : ""} 
+        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""} 
+        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""} 
         ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}`}
     >
       <div className="absolute top-4 flex justify-center w-full">

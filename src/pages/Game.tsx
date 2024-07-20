@@ -61,16 +61,16 @@ const Game = () => {
     let maxNumber;
     switch (difficulty) {
       case "EASY":
-        maxNumber = 10;
-        break;
-      case "MEDIUM":
         maxNumber = 50;
         break;
-      case "HARD":
+      case "MEDIUM":
         maxNumber = 100;
         break;
+      case "HARD":
+        maxNumber = 200;
+        break;
       default:
-        maxNumber = 10;
+        maxNumber = 50;
     }
     const newNumbers = Array.from({ length: maxNumber }, (_, i) => i + 1);
     setNumbers(newNumbers);
@@ -282,13 +282,13 @@ const Game = () => {
           className={`flex flex-col justify-around min-h-screen 
         font-Teko items-center gap-5 transition-all duration-500 ease-in-out 
         ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""} 
-        ${themes === "DARK" ? "bg-[#1A3636] text-white" : ""} 
-        ${themes === "BLUE" ? "bg-[#7C73C0] text-white" : ""} 
+        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""} 
+        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""} 
         ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
         `}
         >
           <div className="flex flex-col items-center gap-5">
-            <div className="flex flex-row-reverse justify-around items-center gap-10 w-full">
+            <div className="flex flex-row-reverse justify-between items-center gap-20 w-full">
               <Dropdown
                 menu={{ items: themeItems }}
                 trigger={["click"]}
@@ -327,7 +327,7 @@ const Game = () => {
               </Dropdown>
             </div>
             <Link to={"/leaderboard"} className="text-xl underline mb-10">
-              Leader Board
+              <p className="text-center animate-pulse font-semibold">Leader Board</p>
             </Link>
           </div>
 

@@ -106,16 +106,32 @@ const LeaderBoard = () => {
     (a, b) => getScoreByDifficulty(a) - getScoreByDifficulty(b)
   );
 
+  const getRankings = (users: any[]) => {
+    let rankings = [];
+    let rank = 1;
+
+    for (let i = 0; i < users.length; i++) {
+      if (i > 0 && getScoreByDifficulty(users[i]) > getScoreByDifficulty(users[i - 1])) {
+        rank = i + 1;
+      }
+      rankings.push({ ...users[i], rank });
+    }
+
+    return rankings;
+  };
+
+  const rankedUsers = getRankings(sortedUsers);
+
   return (
     <div
       className={`min-h-screen font-Teko flex flex-col ${
         themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""
       } 
-        ${themes === "DARK" ? "bg-[#1A3636] text-white" : ""} 
-        ${themes === "BLUE" ? "bg-[#7C73C0] text-white" : ""} 
+        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""} 
+        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""} 
         ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}`}
     >
-      <div className="sticky top-0 w-full flex justify-center gap-10 py-4 z-30">
+      <div className="sticky top-0 w-full flex flex-row-reverse justify-around gap-10 py-4 z-30">
         <Dropdown
           menu={{ items: themeItems }}
           trigger={["click"]}
@@ -141,19 +157,23 @@ const LeaderBoard = () => {
           </a>
         </Dropdown>
       </div>
-      <Link to={"/"} className="text-center underline text-4xl">
-        Let's Play
+      <Link to={"/"} className="underline text-3xl">
+        <p className="hover:rotate-2 font-semibold animate-pulse flex justify-center">Let's Play</p>
       </Link>
       <div className="">
         <div className="mt-10">
           {loading && <p>Loading users...</p>}
           {error && <p>Error: {error}</p>}
-
+          <div className="flex justify-between text-xl px-1 mb-2">
+            <h1>rank</h1>
+            <h1>username</h1>
+            <h1>guess</h1>
+          </div>
           <ul className="flex flex-col">
-            {sortedUsers.map((userItem, index) => (
+            {rankedUsers.map((userItem) => (
               <li
                 key={userItem.username}
-                className={`text-3xl border-b-2 py-2 flex gap-5 w-full justify-around ${
+                className={`text-3xl border-b-2 py-2 flex gap-5 w-full justify-between px-2 ${
                   user?.username === userItem.username ? "text-red-500" : ""
                 }
               ${themes === "PINK" ? "border-black" : ""} 
@@ -162,9 +182,9 @@ const LeaderBoard = () => {
               ${themes === "PURPLE" ? "" : ""}
               `}
               >
-                <div className="w-1/4">{index + 1}</div>
-                <div className="w-2/4 self-start">{userItem.username}</div>
-                <div className="">{getScoreByDifficulty(userItem)}</div>
+                <div className="w-1/4">{userItem.rank}</div>
+                <div className="w-2/4 text-center">{userItem.username}</div>
+                <div className="w-1/4 text-right">{getScoreByDifficulty(userItem)}</div>
               </li>
             ))}
           </ul>
