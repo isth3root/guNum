@@ -13,7 +13,7 @@ import SignUp from "./pages/SignUp";
 import LeaderBoard from "./pages/LeaderBoard";
 
 const App: React.FC = () => {
-  console.log("this is from app.tsx")
+  console.log("hello")
   const { user } = useContext(AuthContext);
   return (
     <Router>
