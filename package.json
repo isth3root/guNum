@@ -3,7 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://isth3root.github.io/guNum/",
   "scripts": {
     "predeploy": "bun run build",
     "deploy": "gh-pages -d dist",
