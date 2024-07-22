@@ -1,21 +1,21 @@
-// ========== React Imports ========== \\
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-
-// ========== ANT DESIGN imports ========== \\
-import type { MenuProps } from "antd";
-import { Dropdown, theme } from "antd";
+import { theme, Modal, Button } from "antd";
 
 import AuthContext from "../context/AuthContext";
 
-// ========== HOOKS ========== \\
 import { useSaveScore } from "../hooks/useSaveScore";
 import { useDeleteAccount } from "../hooks/useDeleteAccount";
+
+import ThemeDropdown from "../components/common/ThemeDropDown";
+import UserDropdown from "../components/common/UserDropDown";
+import GameGrid from "../components/common/GameGrid";
+import GameControls from "../components/common/GameControls";
+import ContextMenu from "../components/common/ContextMenu";
 
 const Game = () => {
   const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
     () => {
-      // Get theme from localStorage, fallback to "DARK" if not found or invalid
       const storedTheme = localStorage.getItem("theme");
       if (
         storedTheme === "PINK" ||
@@ -32,21 +32,20 @@ const Game = () => {
   const [difficulty, setDifficulty] = useState<"EASY" | "MEDIUM" | "HARD">(
     "EASY"
   );
+  const [isDifficultyModalVisible, setIsDifficultyModalVisible] =
+    useState<boolean>(false);
 
-  // Wrong Numbers
   const [crossedNumbers, setCrossedNumbers] = useState<number[]>([]);
-
   const [guessCount, setGuessCount] = useState<number>(0);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [toGuessNumber, setToGuessNumber] = useState<number>(1);
   const [correctGuess, setCorrectGuess] = useState<number | null>(null);
   const [numbers, setNumbers] = useState<number[]>([]);
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
+  const [highlightCorrectNumber, setHighlightCorrectNumber] = useState(false); // New state
 
   const { user, setUser } = useContext(AuthContext);
-
   const { saveScore } = useSaveScore();
-
   const { deleteAccount } = useDeleteAccount();
 
   const shuffleArray = (array: number[]): number[] => {
@@ -89,13 +88,12 @@ const Game = () => {
     setGuessCount((guessCount) => guessCount + 1);
 
     if (clickedNumber === toGuessNumber) {
-      // User clicks on correct Number
       setCrossedNumbers(numbers.filter((num) => num !== clickedNumber));
       setGameOver(true);
       setCorrectGuess(clickedNumber);
+      setHighlightCorrectNumber(true); // Set this state to true
       await sc();
     } else {
-      // User clicks on wrong Number
       let newCrossedNumbers;
       if (clickedNumber < toGuessNumber) {
         newCrossedNumbers = numbers.filter((num) => num <= clickedNumber);
@@ -120,26 +118,26 @@ const Game = () => {
   };
 
   const handleNewGame = (): void => {
+    setIsDifficultyModalVisible(true);
+  };
+
+  const handleDifficultyChange = (difficulty: "EASY" | "MEDIUM" | "HARD") => {
+    setDifficulty(difficulty);
     setCrossedNumbers([]);
     setGuessCount(0);
     setGameOver(false);
     setToGuessNumber(Math.floor(Math.random() * numbers.length) + 1);
     setCorrectGuess(null);
+    setHighlightCorrectNumber(false); // Reset this state
     setShuffledIndices(
       shuffleArray(Array.from({ length: numbers.length }, (_, i) => i))
     );
+    setIsDifficultyModalVisible(false);
   };
 
-  const handleThemeChange = (themes: "PINK" | "DARK" | "PURPLE" | "BLUE") => {
-    setThemes(themes);
-
-    // Put theme on localstorage
-    localStorage.setItem("theme", themes);
-  };
-
-  const handleDifficultyChange = (difficulty: "EASY" | "MEDIUM" | "HARD") => {
-    setDifficulty(difficulty);
-    handleNewGame();
+  const handleThemeChange = (theme: "PINK" | "DARK" | "PURPLE" | "BLUE") => {
+    setThemes(theme);
+    localStorage.setItem("theme", theme);
   };
 
   const handleLogOut = () => {
@@ -160,117 +158,12 @@ const Game = () => {
     }
   };
 
-  const themeItems: MenuProps["items"] = [
-    {
-      key: "1",
-      label: (
-        <div
-          className="font-Teko text-xl select-none"
-          onClick={() => handleThemeChange("PINK")}
-        >
-          PINK
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <div
-          className="font-Teko text-xl select-none"
-          onClick={() => handleThemeChange("DARK")}
-        >
-          DARK
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <div
-          className="font-Teko text-xl select-none"
-          onClick={() => handleThemeChange("BLUE")}
-        >
-          BLUE
-        </div>
-      ),
-    },
-    {
-      key: "4",
-      label: (
-        <div
-          className="font-Teko text-xl select-none"
-          onClick={() => handleThemeChange("PURPLE")}
-        >
-          PURPLE
-        </div>
-      ),
-    },
-  ];
-
-  const difficultyItems: MenuProps["items"] = [
-    {
-      key: "1",
-      label: <div onClick={() => handleDifficultyChange("EASY")}>EASY</div>,
-    },
-    {
-      key: "2",
-      label: <div onClick={() => handleDifficultyChange("MEDIUM")}>MEDIUM</div>,
-    },
-    {
-      key: "3",
-      label: <div onClick={() => handleDifficultyChange("HARD")}>HARD</div>,
-    },
-  ];
-
-  const contextItems: MenuProps["items"] = [
-    {
-      key: "1",
-      label: (
-        <div onClick={() => handleDifficultyChange("EASY")}>New Game: EASY</div>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <div onClick={() => handleDifficultyChange("MEDIUM")}>
-          New Game: MEDIUM
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <div onClick={() => handleDifficultyChange("HARD")}>New Game: HARD</div>
-      ),
-    },
-  ];
-
-  const userItem: MenuProps["items"] = [
-    {
-      key: "1",
-      label: (
-        <div className="font-Teko text-xl" onClick={handleLogOut}>
-          LOGOUT
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <div className="font-Teko text-xl" onClick={handleDeleteAccount}>
-          DELETE ACCOUNT
-        </div>
-      ),
-      danger: true,
-    },
-  ];
-
   const {
     token: { colorBgLayout, colorTextTertiary },
   } = theme.useToken();
 
   return (
-    <Dropdown menu={{ items: contextItems }} trigger={["contextMenu"]}>
+    <ContextMenu handleDifficultyChange={handleDifficultyChange}>
       <div
         style={{
           color: colorTextTertiary,
@@ -279,56 +172,38 @@ const Game = () => {
         }}
       >
         <div
-          className={`flex flex-col justify-around min-h-screen 
-        font-Teko items-center gap-5 transition-all duration-500 ease-in-out 
-        ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""} 
-        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""} 
-        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""} 
-        ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
-        `}
+          className={`flex flex-col justify-around min-h-screen
+            font-Teko items-center gap-5 transition-all duration-500 ease-in-out
+            ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""}
+            ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""}
+            ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""}
+            ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
+          `}
         >
           <div className="flex flex-col items-center gap-5">
-            <div className="flex flex-row-reverse justify-between items-center gap-20 w-full">
-              <Dropdown
-                menu={{ items: themeItems }}
-                trigger={["click"]}
-                className="hover:rotate-6"
-              >
-                <a
-                  onClick={(e) => e.preventDefault()}
-                  className="text-3xl cursor-pointer select-none"
-                >
-                  {themes}
-                </a>
-              </Dropdown>
-              <Dropdown
-                menu={{ items: userItem }}
-                trigger={["click"]}
-                className="hover:-translate-y-1"
-              >
-                <a
-                  onClick={(e) => e.preventDefault()}
-                  className="text-3xl cursor-pointer select-none"
-                >
-                  {user?.username}
-                </a>
-              </Dropdown>
-              <Dropdown
-                menu={{ items: difficultyItems }}
-                trigger={["click"]}
-                className="hover:-rotate-6"
-              >
-                <a
-                  onClick={(e) => e.preventDefault()}
-                  className="text-3xl cursor-pointer select-none"
-                >
-                  {difficulty}
-                </a>
-              </Dropdown>
+            <div className="flex flex-row-reverse justify-between items-center gap-20 w-full mt-5">
+              <ThemeDropdown
+                themes={themes}
+                handleThemeChange={handleThemeChange}
+              />
+              <UserDropdown
+                user={user}
+                handleLogOut={handleLogOut}
+                handleDeleteAccount={handleDeleteAccount}
+              />
             </div>
-            <Link to={"/leaderboard"} className="text-xl underline mb-10">
-              <p className="text-center animate-pulse font-semibold">Leader Board</p>
-            </Link>
+            <div className="w-full flex justify-between">
+              <Link to={"/leaderboard"} className="text-xl underline mb-10">
+                <p className="text-center animate-pulse font-semibold">
+                  Leader Board
+                </p>
+              </Link>
+              <Link to={"/duel"} className="text-xl underline mb-10">
+                <p className="text-center animate-pulse font-semibold">
+                  Duel
+                </p>
+              </Link>
+            </div>
           </div>
 
           <div className="text-3xl select-none">
@@ -337,47 +212,40 @@ const Game = () => {
               number
             </span>
           </div>
-          <div className="grid grid-cols-5 sm:grid-cols-10 gap-5 text-4xl sm:text-5xl select-none mb-10">
-            {shuffledIndices.map((index) => (
-              <div key={index}>
-                <p
-                  className={`cursor-pointer hover:rotate-12 ${
-                    crossedNumbers.includes(numbers[index])
-                      ? "line-through opacity-5 transition-all duration-1000 ease-in-out"
-                      : ""
-                  } ${
-                    correctGuess === numbers[index]
-                      ? "text-red-500 font-extrabold"
-                      : ""
-                  }`}
-                  onClick={() => handleClick(index)}
-                >
-                  {numbers[index]}
-                </p>
-              </div>
-            ))}
-          </div>
-          {gameOver && (
-            <div className="flex flex-col gap-4 items-center">
-              <h1 className="select-none text-3xl">{`You guessed the number with ${guessCount} ${
-                guessCount <= 1 ? "guess" : "guesses"
-              }`}</h1>
-            </div>
-          )}
-          <button
-            className={`select-none mb-10 text-2xl hover:shadow-lg rounded-md py-2 px-5 hover:rotate-6
-            ${themes === "PINK" ? "bg-black text-white" : ""} 
-            ${themes === "DARK" ? "bg-white text-black" : ""} 
-            ${themes === "BLUE" ? "bg-white text-black" : ""} 
-            ${themes === "PURPLE" ? "bg-white text-black" : ""} 
-            `}
-            onClick={handleNewGame}
-          >
-            New Game
-          </button>
+
+          <GameGrid
+            numbers={numbers}
+            shuffledIndices={shuffledIndices}
+            crossedNumbers={crossedNumbers}
+            correctGuess={correctGuess}
+            handleClick={handleClick}
+            highlightCorrectNumber={highlightCorrectNumber} // Pass this state to GameGrid
+          />
+
+          <GameControls
+            themes={themes}
+            gameOver={gameOver}
+            guessCount={guessCount}
+            handleNewGame={handleNewGame}
+          />
         </div>
+
+        <Modal
+          title="Select Difficulty"
+          open={isDifficultyModalVisible}
+          footer={null}
+          closable={false}
+        >
+          <div className="flex flex-col items-center gap-4">
+            <Button onClick={() => handleDifficultyChange("EASY")}>Easy</Button>
+            <Button onClick={() => handleDifficultyChange("MEDIUM")}>
+              Medium
+            </Button>
+            <Button onClick={() => handleDifficultyChange("HARD")}>Hard</Button>
+          </div>
+        </Modal>
       </div>
-    </Dropdown>
+    </ContextMenu>
   );
 };
 

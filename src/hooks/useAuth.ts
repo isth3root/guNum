@@ -3,6 +3,7 @@ import axiosInstance from "../utils/axiosInstance";
 import AppContext from "../context/AuthContext";
 
 interface User {
+  _id: string;
   username: string;
   password: string;
   score: {
@@ -10,6 +11,7 @@ interface User {
     medium: number;
     hard: number;
   };
+  duelXP: number
 }
 
 interface AxiosError {

@@ -1,8 +1,10 @@
 import React, { useState, useContext } from "react";
 import { Input, message, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import { useAuth } from "../hooks/useAuth";
+
 import AuthContext from "../context/AuthContext";
+
+import { useAuth } from "../hooks/useAuth";
 
 interface SignUpProps {}
 

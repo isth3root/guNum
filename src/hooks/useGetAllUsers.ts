@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import axiosInstance from "../utils/axiosInstance";
 
 interface User {
+  _id: string;
   username: string;
   password: string;
   score: {
@@ -9,6 +10,7 @@ interface User {
     medium: number;
     hard: number;
   };
+  duelXP: number;
 }
 
 interface AxiosError {
@@ -24,7 +26,7 @@ export const useGetAllUsers = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getAllUsers = async () => {
+  const getAllUsers = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -41,7 +43,7 @@ export const useGetAllUsers = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { getAllUsers, users, loading, error };
 };
