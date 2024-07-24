@@ -1,3 +1,4 @@
+import { message } from "antd";
 import React from "react";
 
 interface LeaderBoardListProps {
@@ -21,7 +22,7 @@ const LeaderBoardList: React.FC<LeaderBoardListProps> = ({
     for (let i = 0; i < users.length; i++) {
       if (
         i > 0 &&
-        getScoreByDifficulty(users[i]) > getScoreByDifficulty(users[i - 1])
+        getScoreByDifficulty(users[i]) < getScoreByDifficulty(users[i - 1])
       ) {
         rank = i + 1;
       }
@@ -32,6 +33,17 @@ const LeaderBoardList: React.FC<LeaderBoardListProps> = ({
   };
 
   const rankedUsers = getRankings(users);
+
+  const handleUsernameClick = (username: string) => {
+    navigator.clipboard.writeText(username).then(
+      () => {
+        message.success(`${username} copied to clipboard!`);
+      },
+      (err) => {
+        console.error("Failed to copy text: ", err);
+      }
+    );
+  };
 
   return (
     <div>
@@ -54,7 +66,7 @@ const LeaderBoardList: React.FC<LeaderBoardListProps> = ({
             `}
           >
             <div className="w-1/4">{userItem.rank}</div>
-            <div className="w-2/4 text-center">{userItem.username}</div>
+            <div className="w-2/4 text-center cursor-pointer" onClick={()=>handleUsernameClick(userItem.username)}>{userItem.username}</div>
             <div className="w-1/4 text-right">
               {getScoreByDifficulty(userItem)}
             </div>

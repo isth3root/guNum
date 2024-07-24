@@ -1,8 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { Divider, Input, Spin, Alert, Modal, Select } from "antd";
-import ThemeDropdown from "../components/common/ThemeDropDown";
+import { Divider, Input, Spin, Modal, Select } from "antd";
 
 import AuthContext from "../context/AuthContext";
 
@@ -17,23 +16,19 @@ import useDenyDuelRequest from "../hooks/useDenyDuel";
 import { DuelRequest, Duel } from "../types";
 
 import { AiOutlineDelete } from "react-icons/ai";
-import { MdOutlineLeaderboard } from "react-icons/md";
-import { LuSword, LuSwords } from "react-icons/lu";
+import { LuSwords } from "react-icons/lu";
 import useDeleteDuel from "../hooks/useDeleteDuel";
 
 const { Option } = Select;
 
 const Duels = () => {
-  const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
-    () => {
-      const storedTheme = localStorage.getItem("theme");
-      return (storedTheme as "PINK" | "DARK" | "PURPLE" | "BLUE") || "DARK";
-    }
-  );
+  const [themes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(() => {
+    const storedTheme = localStorage.getItem("theme");
+    return (storedTheme as "PINK" | "DARK" | "PURPLE" | "BLUE") || "DARK";
+  });
 
   const { getAllUsers, users } = useGetAllUsers();
   const { user } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,28 +38,20 @@ const Duels = () => {
   const {
     requests,
     loading: loadingRequests,
-    error: errorRequests,
     refetch: refetchRequests,
   } = useDuelRequests(user!.username);
 
   const {
     duels: activeDuels,
     loading: loadingActive,
-    error: errorActive,
     refetch: refetchActive,
   } = useActiveDuels(user!.username);
 
   const {
     duels: finishedDuels,
     loading: loadingFinished,
-    error: errorFinished,
     refetch: refetchFinished,
   } = useFinishedDuels(user!.username);
-
-  const handleThemeChange = (theme: "PINK" | "DARK" | "PURPLE" | "BLUE") => {
-    setThemes(theme);
-    localStorage.setItem("theme", theme);
-  };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [username, setUsername] = useState("");
@@ -115,30 +102,20 @@ const Duels = () => {
     refetchActive();
     refetchFinished();
   };
+
   return (
     <div
-      className={`flex flex-col min-h-screen items-center py-5
-        ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""}
-        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""}
-        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""}
-        ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
+      className={`flex flex-col min-h-screen items-center py-5 font-Teko
+        ${themes === "PINK" ? "bg-themePink text-black" : ""}
+        ${themes === "DARK" ? "bg-themeDark text-white" : ""}
+        ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
+        ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
       `}
     >
-      <ThemeDropdown themes={themes} handleThemeChange={handleThemeChange} />
-      <div className="w-full flex justify-around mt-5">
-        <Link
-          to="/leaderboard"
-          className="flex items-center flex-row-reverse gap-1 text-xl mb-10"
-        >
-          <p className="animate-pulse font-semibold">Leader Board</p>
-          <MdOutlineLeaderboard className="text-2xl" />
-        </Link>
-        <Link
-          to="/"
-          className="text-xl mb-10 flex flex-row-reverse items-center gap-1"
-        >
-          <p className="text-center animate-pulse font-semibold">Single Play</p>
-          <LuSword />
+      {/* <ThemeDropdown themes={themes} handleThemeChange={handleThemeChange} /> */}
+      <div className="flex justify-center mt-5 mb-10">
+        <Link to="/">
+          <p className="animate-pulse font-semibold text-2xl underline">Home</p>
         </Link>
       </div>
       <Divider
@@ -185,39 +162,39 @@ const Duels = () => {
       >
         Requests
       </Divider>
-      {loadingRequests && <Spin />}
-      {errorRequests && <Alert message={errorRequests} type="error" />}
-      <div className="flex flex-col gap-5">
-        {requests.map((request: DuelRequest) => (
-          <div
-            key={request._id}
-            className={`flex flex-col font-Teko px-20 justify-between rounded-lg items-center border-b-2 w-full bg-white py-5
-            text-black
-          `}
-          >
-            <h1 className="text-2xl">{request.difficulty}</h1>
-            <div className="flex justify-center items-center w-full gap-40">
-              <h1 className="text-4xl max-w-30 overflow-hidden">
-                {users.find((user) => user._id === request.sender)?.username}
-              </h1>
+      {loadingRequests ? (
+        <Spin />
+      ) : (
+        <div className="flex flex-col gap-5">
+          {requests.map((request: DuelRequest) => (
+            <div
+              key={request._id}
+              className="flex flex-col font-Teko px-16 justify-between items-center border-b-2 w-full bg-white py-5 text-black"
+            >
+              <h1 className="text-2xl">{request.difficulty}</h1>
+              <div className="flex justify-center items-center w-full gap-40">
+                <h1 className="text-4xl max-w-30 overflow-hidden">
+                  {users.find((user) => user._id === request.sender)?.username}
+                </h1>
+              </div>
+              <div className="flex gap-10 mt-4 items-center">
+                <button
+                  onClick={() => handleAcceptDuel(request._id)}
+                  className="text-2xl bg-greenWinner text-white px-2"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleDeny(request._id)}
+                  className="text-2xl bg-redLoser text-white px-2"
+                >
+                  Deny
+                </button>
+              </div>
             </div>
-            <div className="flex gap-10 mt-4 items-center">
-              <button
-                onClick={() => handleAcceptDuel(request._id)}
-                className="text-2xl bg-green-400 text-white px-2"
-              >
-                Accept
-              </button>
-              <button
-                onClick={() => handleDeny(request._id)}
-                className="text-2xl bg-red-400 text-white px-2"
-              >
-                Deny
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       <Divider
         style={{ color: "white", fontFamily: "Teko", fontSize: "1.25rem" }}
@@ -225,49 +202,50 @@ const Duels = () => {
         Active Duels
       </Divider>
 
-      {loadingActive && <Spin />}
-      {errorActive && <Alert message={errorActive} type="error" />}
-      <div className="flex flex-col gap-5">
-        {activeDuels.map((duel: Duel) => {
-          const isDisabled =
-            (duel.sender === user?._id && !!duel.senderGuesses) ||
-            (duel.receiver === user?._id && !!duel.receiverGuesses);
-          return (
-            <div
-              key={duel._id}
-              className={`flex flex-col font-Teko px-20 justify-between rounded-lg items-center border-b-2 w-full bg-white py-5
-            text-black
-          `}
-            >
-              <h1 className="text-2xl">{duel.difficulty}</h1>
-              <div className="flex justify-between gap-10 w-full">
-                <h1 className="text-3xl">
-                  {users.find((user) => user._id === duel.sender)?.username}
-                </h1>
-                <h1 className="text-3xl">
-                  {users.find((user) => user._id === duel.receiver)?.username}
-                </h1>
+      {loadingActive ? (
+        <Spin />
+      ) : (
+        <div className="flex flex-col gap-5">
+          {activeDuels.map((duel: Duel) => {
+            const isDisabled =
+              (duel.sender === user?._id && !!duel.senderGuesses) ||
+              (duel.receiver === user?._id && !!duel.receiverGuesses);
+            return (
+              <div
+                key={duel._id}
+                className="flex flex-col font-Teko px-14 justify-between items-center border-b-2 w-full bg-white py-5 text-black"
+              >
+                <h1 className="text-2xl">{duel.difficulty}</h1>
+                <div className="flex justify-between gap-10 w-full">
+                  <h1 className="text-3xl">
+                    {users.find((user) => user._id === duel.sender)?.username}
+                  </h1>
+                  <h1 className="text-3xl">
+                    {users.find((user) => user._id === duel.receiver)?.username}
+                  </h1>
+                </div>
+                <div className="flex items-center gap-3 text-2xl">
+                  <h1>{duel.senderGuesses}</h1> :{" "}
+                  <h1>{duel.receiverGuesses}</h1>
+                </div>
+                <div className="flex gap-10 mt-4 px-14 items-center">
+                  <button
+                    className={`text-2xl px-4 ${
+                      isDisabled
+                        ? "bg-greyTie text-gray-500 cursor-not-allowed"
+                        : "bg-greenWinner text-white"
+                    }`}
+                    onClick={() => handlePlay(duel)}
+                    disabled={isDisabled}
+                  >
+                    {isDisabled ? "Played" : "Play"}
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-2xl">
-                <h1>{duel.senderGuesses}</h1> : <h1>{duel.receiverGuesses}</h1>
-              </div>
-              <div className="flex gap-10 mt-4 px-14 items-center">
-                <button
-                  className={`text-2xl px-4 ${
-                    isDisabled
-                      ? "bg-slate-200 text-gray-500 cursor-not-allowed"
-                      : "bg-green-400 text-white"
-                  }`}
-                  onClick={() => handlePlay(duel)}
-                  disabled={isDisabled}
-                >
-                  {isDisabled ? "Played" : "Play"}
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       <Divider
         style={{ color: "white", fontFamily: "Teko", fontSize: "1.25rem" }}
@@ -275,44 +253,44 @@ const Duels = () => {
         Finished Duels
       </Divider>
 
-      {loadingFinished && <Spin />}
-      {errorFinished && <Alert message={errorFinished} type="error" />}
-      <div className="flex flex-col gap-5 font-Teko">
-        {finishedDuels.map((duel: Duel) => (
-          <div
-            key={duel._id}
-            className={`relative flex flex-col justify-between rounded-lg items-center border-b-4 w-full bg-white px-5 py-2
-            ${
-              duel.winner
-                ? user?._id === duel.winner
-                  ? "bg-green-300 text-black"
-                  : "bg-red-500 text-white"
-                : "bg-slate-300 text-black"
-            }
-          `}
-          >
-            <div className="absolute top-1 right-1 text-black text-2xl">
-              <AiOutlineDelete
-                onClick={() => handleDeleteDuel(duel._id)}
-                className="cursor-pointer hover:text-red-500"
-              />
+      {loadingFinished ? (
+        <Spin />
+      ) : (
+        <div className="flex flex-col gap-5 font-Teko">
+          {finishedDuels.map((duel: Duel) => (
+            <div
+              key={duel._id}
+              className={`relative flex flex-col justify-between items-center border-b-4 w-full px-2 py-2 ${
+                duel.winner
+                  ? user?._id === duel.winner
+                    ? "bg-greenWinner text-black"
+                    : "bg-redLoser text-white"
+                  : "bg-greyTie text-black"
+              }`}
+            >
+              <div className="absolute top-1 right-1 text-black text-2xl">
+                <AiOutlineDelete
+                  onClick={() => handleDeleteDuel(duel._id)}
+                  className="cursor-pointer hover:text-red-500"
+                />
+              </div>
+              <h1 className="text-2xl">{duel.difficulty}</h1>
+              <div className="flex justify-between w-full gap-40">
+                <h1 className="text-3xl max-w-20 overflow-hidden">
+                  {users.find((user) => user._id === duel.sender)?.username}
+                </h1>
+                <h1 className="text-3xl max-w-20 overflow-hidden">
+                  {users.find((user) => user._id === duel.receiver)?.username}
+                </h1>
+              </div>
+              <div className="flex gap-3 items-center">
+                <h1 className="text-3xl">{duel.senderGuesses}</h1> :{" "}
+                <h1 className="text-3xl">{duel.receiverGuesses}</h1>
+              </div>
             </div>
-            <h1 className="text-2xl">{duel.difficulty}</h1>
-            <div className="flex justify-between w-full gap-40">
-              <h1 className="text-3xl max-w-20 overflow-hidden">
-                {users.find((user) => user._id === duel.sender)?.username}
-              </h1>
-              <h1 className="text-3xl max-w-20 overflow-hidden">
-                {users.find((user) => user._id === duel.receiver)?.username}
-              </h1>
-            </div>
-            <div className="flex gap-3 items-center">
-              <h1 className="text-3xl">{duel.senderGuesses}</h1> :{" "}
-              <h1 className="text-3xl">{duel.receiverGuesses}</h1>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

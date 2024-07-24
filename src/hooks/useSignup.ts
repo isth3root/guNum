@@ -5,13 +5,12 @@ import AppContext from "../context/AuthContext";
 interface User {
   _id: string;
   username: string;
-  password: string;
   score: {
     easy: number;
     medium: number;
     hard: number;
   };
-  duelXP: number
+  duelXP: number;
 }
 
 interface AxiosError {
@@ -22,25 +21,25 @@ interface AxiosError {
   };
 }
 
-export const useAuth = () => {
+export const useSignup = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { setUser } = useContext(AppContext);
 
-  const signUp = async (username: string, password: string): Promise<User> => {
+  const signup = async (username: string, password: string): Promise<User> => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await axiosInstance.post<User>("/users/add", {
+      const response = await axiosInstance.post<User>("/users/signup", {
         username,
         password,
       });
       const userData = response.data;
       localStorage.setItem("user", JSON.stringify(userData));
-      setUser(response.data);
+      setUser(userData);
 
-      return response.data;
+      return userData;
     } catch (err: any) {
       console.error("Error during sign up:", err);
       const axiosError = err as AxiosError;
@@ -53,5 +52,5 @@ export const useAuth = () => {
     }
   };
 
-  return { signUp, loading, error };
+  return { signup, loading, error };
 };

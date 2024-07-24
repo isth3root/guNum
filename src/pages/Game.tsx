@@ -5,16 +5,13 @@ import { theme, Modal, Button } from "antd";
 import AuthContext from "../context/AuthContext";
 
 import { useSaveScore } from "../hooks/useSaveScore";
-import { useDeleteAccount } from "../hooks/useDeleteAccount";
 
-import ThemeDropdown from "../components/common/ThemeDropDown";
-import UserDropdown from "../components/common/UserDropDown";
 import GameGrid from "../components/common/GameGrid";
 import GameControls from "../components/common/GameControls";
 import ContextMenu from "../components/common/ContextMenu";
 
 const Game = () => {
-  const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
+  const [themes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
     () => {
       const storedTheme = localStorage.getItem("theme");
       if (
@@ -42,11 +39,11 @@ const Game = () => {
   const [correctGuess, setCorrectGuess] = useState<number | null>(null);
   const [numbers, setNumbers] = useState<number[]>([]);
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
-  const [highlightCorrectNumber, setHighlightCorrectNumber] = useState(false); // New state
+  const [highlightCorrectNumber, setHighlightCorrectNumber] = useState(false);
 
-  const { user, setUser } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { saveScore } = useSaveScore();
-  const { deleteAccount } = useDeleteAccount();
+  
 
   const shuffleArray = (array: number[]): number[] => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -91,7 +88,7 @@ const Game = () => {
       setCrossedNumbers(numbers.filter((num) => num !== clickedNumber));
       setGameOver(true);
       setCorrectGuess(clickedNumber);
-      setHighlightCorrectNumber(true); // Set this state to true
+      setHighlightCorrectNumber(true);
       await sc();
     } else {
       let newCrossedNumbers;
@@ -128,39 +125,20 @@ const Game = () => {
     setGameOver(false);
     setToGuessNumber(Math.floor(Math.random() * numbers.length) + 1);
     setCorrectGuess(null);
-    setHighlightCorrectNumber(false); // Reset this state
+    setHighlightCorrectNumber(false);
     setShuffledIndices(
       shuffleArray(Array.from({ length: numbers.length }, (_, i) => i))
     );
     setIsDifficultyModalVisible(false);
   };
 
-  const handleThemeChange = (theme: "PINK" | "DARK" | "PURPLE" | "BLUE") => {
-    setThemes(theme);
-    localStorage.setItem("theme", theme);
-  };
-
-  const handleLogOut = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-  };
-
-  const handleDeleteAccount = async () => {
-    handleLogOut();
-    if (user?.username) {
-      try {
-        await deleteAccount(user.username);
-      } catch (error) {
-        console.error("Error deleting account:", error);
-      }
-    } else {
-      console.warn("Username is undefined, cannot delete account.");
-    }
-  };
-
   const {
     token: { colorBgLayout, colorTextTertiary },
   } = theme.useToken();
+
+  const handleCancel = () => {
+    setIsDifficultyModalVisible(false);
+  };
 
   return (
     <ContextMenu handleDifficultyChange={handleDifficultyChange}>
@@ -174,33 +152,17 @@ const Game = () => {
         <div
           className={`flex flex-col justify-around min-h-screen
             font-Teko items-center gap-5 transition-all duration-500 ease-in-out
-            ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""}
-            ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""}
-            ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""}
-            ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
+            ${themes === "PINK" ? "bg-themePink text-black" : ""}
+            ${themes === "DARK" ? "bg-themeDark text-white" : ""}
+            ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
+            ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
           `}
         >
           <div className="flex flex-col items-center gap-5">
-            <div className="flex flex-row-reverse justify-between items-center gap-20 w-full mt-5">
-              <ThemeDropdown
-                themes={themes}
-                handleThemeChange={handleThemeChange}
-              />
-              <UserDropdown
-                user={user}
-                handleLogOut={handleLogOut}
-                handleDeleteAccount={handleDeleteAccount}
-              />
-            </div>
-            <div className="w-full flex justify-between">
-              <Link to={"/leaderboard"} className="text-xl underline mb-10">
-                <p className="text-center animate-pulse font-semibold">
-                  Leader Board
-                </p>
-              </Link>
-              <Link to={"/duel"} className="text-xl underline mb-10">
-                <p className="text-center animate-pulse font-semibold">
-                  Duel
+            <div className="w-full flex justify-center mt-5 mb-10">
+              <Link to={"/"} className="">
+                <p className="underline text-2xl animate-pulse font-semibold">
+                  Home
                 </p>
               </Link>
             </div>
@@ -219,7 +181,7 @@ const Game = () => {
             crossedNumbers={crossedNumbers}
             correctGuess={correctGuess}
             handleClick={handleClick}
-            highlightCorrectNumber={highlightCorrectNumber} // Pass this state to GameGrid
+            highlightCorrectNumber={highlightCorrectNumber}
           />
 
           <GameControls
@@ -234,7 +196,7 @@ const Game = () => {
           title="Select Difficulty"
           open={isDifficultyModalVisible}
           footer={null}
-          closable={false}
+          onCancel={handleCancel}
         >
           <div className="flex flex-col items-center gap-4">
             <Button onClick={() => handleDifficultyChange("EASY")}>Easy</Button>

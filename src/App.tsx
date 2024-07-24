@@ -11,12 +11,22 @@ import SignUp from "./pages/SignUp";
 import LeaderBoard from "./pages/LeaderBoard";
 import Duel from "./pages/Duel";
 import DuelGame from "./pages/DuelGame";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
   return (
     <Router>
       <Routes>
+      <Route
+          path="/profile"
+          element={user ? <Profile /> : <Navigate to="/signup" replace />}
+        />
+      <Route
+          path="/"
+          element={user ? <Home /> : <Navigate to="/signup" replace />}
+        />
         <Route
           path="/duel/:duelId"
           element={user ? <DuelGame /> : <Navigate to="/signup" replace />}
@@ -30,7 +40,7 @@ const App: React.FC = () => {
           element={user ? <Duel /> : <Navigate to="/signup" replace />}
         />
         <Route
-          path="/"
+          path="/single"
           element={user ? <Game /> : <Navigate to="/signup" replace />}
         />
         <Route

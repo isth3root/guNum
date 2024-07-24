@@ -5,7 +5,6 @@ import React, { createContext, useState, useEffect } from "react";
 type User = {
   _id: string;
   username: string;
-  password: string;
   score: {
     easy: number;
     medium: number;

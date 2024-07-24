@@ -22,7 +22,7 @@ const GameControls: React.FC<GameControlsProps> = ({
       )}
       {!gameOver && <div className="text-2xl">Guess Count : {guessCount}</div>}
       <button
-        className={`select-none mb-10 text-2xl hover:shadow-lg rounded-md py-2 px-5 hover:rotate-6
+        className={`select-none mb-5 text-2xl hover:shadow-lg rounded-md py-2 px-5 hover:rotate-6
         ${themes === "PINK" ? "bg-black text-white" : ""}
         ${themes === "DARK" ? "bg-white text-black" : ""}
         ${themes === "BLUE" ? "bg-white text-black" : ""}

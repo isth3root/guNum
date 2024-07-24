@@ -1,161 +1,166 @@
-import React, { useState, useContext } from "react";
-import { Input, message, Dropdown } from "antd";
+import React, { useState } from "react";
+import { Input, message, Dropdown, Menu } from "antd";
 import type { MenuProps } from "antd";
-
-import AuthContext from "../context/AuthContext";
-
-import { useAuth } from "../hooks/useAuth";
+import { useLogin } from "../hooks/useLogin";
+import { useSignup } from "../hooks/useSignup";
 
 interface SignUpProps {}
 
 const SignUp: React.FC<SignUpProps> = () => {
-  const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
-    () => {
-      // get theme from localstorage. Default is Dark.
-      const storedTheme = localStorage.getItem("theme");
-      return (storedTheme as "PINK" | "DARK" | "PURPLE" | "BLUE") || "DARK";
-    }
+  const [theme, setTheme] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
+    () => (localStorage.getItem("theme") as "PINK" | "DARK" | "PURPLE" | "BLUE") || "DARK"
   );
-  const [userName, setUserName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const { setUser } = useContext(AuthContext);
-  const { signUp, loading, error } = useAuth();
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const [isSignUp, setIsSignUp] = useState<boolean>(false);
+
+  const [userNameLogin, setUserNameLogin] = useState<string>("");
+  const [passwordLogin, setPasswordLogin] = useState<string>("");
+  const [usernameSignup, setUsernameSignup] = useState<string>("");
+  const [passwordSignup, setPasswordSignup] = useState<string>("");
+
+  const { login, loading: loadingLogin, error: errorLogin } = useLogin();
+  const { signup, loading: loadingSignup, error: errorSignup } = useSignup();
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const data = await signUp(userName, password);
+      await login(userNameLogin, passwordLogin);
       message.success("Welcome");
-      setUser(data);
-      setUserName("");
-      setPassword("");
-    } catch (err) {
-      message.error(error || "Failed to sign up");
+      setUserNameLogin("");
+      setPasswordLogin("");
+    } catch {
+      message.error(errorLogin || "Failed to log in");
     }
   };
 
-  // Handle input changes with filtering
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const filteredValue = value.replace(
-      /[^a-zA-Z0-9!@#$%^&*()_+={}[\]:;"'<>,.?/|\\-]/g,
-      ""
-    );
-    setUserName(filteredValue);
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await signup(usernameSignup, passwordSignup);
+      message.success("Welcome");
+      setUsernameSignup("");
+      setPasswordSignup("");
+    } catch {
+      message.error(errorSignup || "Failed to sign up");
+    }
   };
 
-  // Handle theme change and save to localStorage
   const handleThemeChange = (theme: "PINK" | "DARK" | "PURPLE" | "BLUE") => {
-    setThemes(theme);
+    setTheme(theme);
     localStorage.setItem("theme", theme);
   };
 
-  // Define menu items for the dropdown
   const themeItems: MenuProps["items"] = [
     {
       key: "1",
-      label: (
-        <div
-          className="font-Teko text-xl select-none"
-          onClick={() => handleThemeChange("PINK")}
-        >
-          PINK
-        </div>
-      ),
+      label: "PINK",
+      onClick: () => handleThemeChange("PINK"),
     },
     {
       key: "2",
-      label: (
-        <div
-          className="font-Teko text-xl select-none"
-          onClick={() => handleThemeChange("DARK")}
-        >
-          DARK
-        </div>
-      ),
+      label: "DARK",
+      onClick: () => handleThemeChange("DARK"),
     },
     {
       key: "3",
-      label: (
-        <div
-          className="font-Teko text-xl select-none"
-          onClick={() => handleThemeChange("BLUE")}
-        >
-          BLUE
-        </div>
-      ),
+      label: "BLUE",
+      onClick: () => handleThemeChange("BLUE"),
     },
     {
       key: "4",
-      label: (
-        <div
-          className="font-Teko text-xl select-none"
-          onClick={() => handleThemeChange("PURPLE")}
-        >
-          PURPLE
-        </div>
-      ),
+      label: "PURPLE",
+      onClick: () => handleThemeChange("PURPLE"),
     },
   ];
+
+  const dropdownMenu = <Menu items={themeItems} />;
 
   return (
     <div
       className={`flex flex-col items-center justify-center font-Teko h-screen ${
-        themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""
-      } 
-        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""} 
-        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""} 
-        ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}`}
+        theme === "PINK" ? "bg-themePink text-black" : ""
+      }
+        ${theme === "DARK" ? "bg-themeDark text-white" : ""} 
+        ${theme === "BLUE" ? "bg-themeBlue text-white" : ""} 
+        ${theme === "PURPLE" ? "bg-themePurple text-white" : ""}`}
     >
       <div className="absolute top-4 flex justify-center w-full">
-        <Dropdown
-          menu={{ items: themeItems }}
-          trigger={["click"]}
-          className="hover:rotate-6"
-        >
+        <Dropdown overlay={dropdownMenu} trigger={["click"]}>
           <a
             onClick={(e) => e.preventDefault()}
-            className="text-3xl cursor-pointer select-none"
+            className="text-3xl cursor-pointer select-none hover:rotate-6 transition-transform"
           >
-            {themes}
+            {theme}
           </a>
         </Dropdown>
       </div>
 
       <div className="flex flex-col items-center justify-center flex-grow">
-        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-          <h1 className="text-2xl select-none">Login / Signup</h1>
-          <Input
-            addonBefore="@"
-            placeholder="Username"
-            className="w-72 sm:w-80"
-            value={userName}
-            onChange={handleInputChange}
-            title="Username can only contain English letters, numbers, and symbols"
-            required
-            maxLength={10}
-          />
-          <Input.Password
-            placeholder="Password"
-            className="w-72 sm:w-80"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button
-            className={`text-white w-72 sm:w-80 rounded-md py-2
-              ${themes === "PINK" ? "bg-[#FF7777]" : ""}
-              ${themes === "DARK" ? "bg-[#FF4191]" : ""}
-              ${themes === "BLUE" ? "bg-[#667BC6]" : ""}
-              ${themes === "PURPLE" ? "bg-[#E4003A]" : ""}
-              `}
-            type="submit"
-            disabled={loading}
-          >
-            <p className="text-2xl">{loading ? "Loading..." : "Continue"}</p>
-          </button>
-        </form>
+        {isSignUp ? (
+          <form className="flex flex-col gap-5" onSubmit={handleSignup}>
+            <h1 className="text-3xl select-none">Signup</h1>
+            <Input
+              addonBefore="@"
+              placeholder="Username"
+              className="w-72 sm:w-80"
+              value={usernameSignup}
+              onChange={(e) => setUsernameSignup(e.target.value)}
+              maxLength={10}
+            />
+            <Input.Password
+              placeholder="Password"
+              className="w-72 sm:w-80"
+              value={passwordSignup}
+              onChange={(e) => setPasswordSignup(e.target.value)}
+            />
+            <button
+              className={`text-white w-72 sm:w-80 rounded-md py-2 ${theme === "PINK" ? "bg-[#FF7777]" : ""} ${theme === "DARK" ? "bg-[#405D72]" : ""} ${theme === "BLUE" ? "bg-[#667BC6]" : ""} ${theme === "PURPLE" ? "bg-[#E4003A]" : ""}`}
+              type="submit"
+              disabled={loadingSignup}
+            >
+              <p className="text-2xl">{loadingSignup ? "Loading..." : "Continue"}</p>
+            </button>
+            <button
+              className="text-center text-3xl underline"
+              type="button"
+              onClick={() => setIsSignUp((prev) => !prev)}
+            >
+              Login here
+            </button>
+          </form>
+        ) : (
+          <form className="flex flex-col gap-5" onSubmit={handleLogin}>
+            <h1 className="text-3xl select-none">Login</h1>
+            <Input
+              addonBefore="@"
+              placeholder="Username"
+              className="w-72 sm:w-80"
+              value={userNameLogin}
+              onChange={(e) => setUserNameLogin(e.target.value)}
+              maxLength={10}
+            />
+            <Input.Password
+              placeholder="Password"
+              className="w-72 sm:w-80"
+              value={passwordLogin}
+              onChange={(e) => setPasswordLogin(e.target.value)}
+            />
+            <button
+              className={`text-white w-72 sm:w-80 rounded-md py-2 ${theme === "PINK" ? "bg-[#FF7777]" : ""} ${theme === "DARK" ? "bg-[#405D72]" : ""} ${theme === "BLUE" ? "bg-[#667BC6]" : ""} ${theme === "PURPLE" ? "bg-[#E4003A]" : ""}`}
+              type="submit"
+              disabled={loadingLogin}
+            >
+              <p className="text-2xl">{loadingLogin ? "Loading..." : "Continue"}</p>
+            </button>
+            <button
+              className="text-center text-3xl underline"
+              type="button"
+              onClick={() => setIsSignUp((prev) => !prev)}
+            >
+              Signup here
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

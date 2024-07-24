@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useParams, useLocation, Link } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 import AuthContext from "../context/AuthContext";
 
@@ -35,6 +35,7 @@ const DuelGame = () => {
       return "DARK";
     }
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedState = localStorage.getItem(`duelGameState-${duelId}`);
@@ -138,39 +139,42 @@ const DuelGame = () => {
     setThemes(theme);
     localStorage.setItem("theme", theme);
   };
+  useEffect(() => {
+    if (gameOver) {
+      navigate("/duel")
+    }
+  },[gameOver])
 
   return (
     <div
       className={`flex flex-col min-h-screen items-center py-5 px-5 font-Teko
-        ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""}
-        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""}
-        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""}
-        ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
+        ${themes === "PINK" ? "bg-themePink text-black" : ""}
+        ${themes === "DARK" ? "bg-themeDark text-white" : ""}
+        ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
+        ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
     `}
     >
       <div className="mb-10">
         <ThemeDropdown themes={themes} handleThemeChange={handleThemeChange} />
       </div>
       {!gameOver && (
-        <div>
-          <GameGrid
-            numbers={numbers}
-            shuffledIndices={shuffledIndices}
-            crossedNumbers={crossedNumbers}
-            correctGuess={correctNumber}
-            handleClick={handleClick}
-            highlightCorrectNumber={highlightCorrectNumber}
-          />
-        </div>
-      )}
-      {gameOver && (
-        <div className="flex flex-col justify-center gap-5 items-center min-h-screen">
-          <h1 className="text-2xl font-bold">
-            Game Over! Your guesses: {guessCount + 1}
-          </h1>
-          <Link to={"/duel"} className="text-3xl">
-            Go Back
-          </Link>
+        <div className="">
+          <div>
+            <GameGrid
+              numbers={numbers}
+              shuffledIndices={shuffledIndices}
+              crossedNumbers={crossedNumbers}
+              correctGuess={correctNumber}
+              handleClick={handleClick}
+              highlightCorrectNumber={highlightCorrectNumber}
+            />
+          </div>
+          <div className={`text-4xl sticky bottom-0 w-full left-0 z-20 text-center py-5
+             ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""}
+        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""}
+        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""}
+        ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
+            `}>Guess Count : {guessCount}</div>
         </div>
       )}
     </div>

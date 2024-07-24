@@ -5,32 +5,28 @@ import AuthContext from "../context/AuthContext";
 
 import { useGetAllUsers } from "../hooks/useGetAllUsers";
 
-import ThemeDropdown from "../components/common/ThemeDropDown";
 import DifficultyDropdown from "../components/common/DifficultyDropDown";
 import LeaderBoardList from "../components/LeaderBoardList";
 
 const LeaderBoard = () => {
-  const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
+  const [themes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
     () => {
       const storedTheme = localStorage.getItem("theme");
       return (storedTheme as "PINK" | "DARK" | "PURPLE" | "BLUE") || "DARK";
     }
   );
 
-  const [difficulty, setDifficulty] = useState<"EASY" | "MEDIUM" | "HARD" | "DuelXP">(
-    "DuelXP"
-  );
+  const [difficulty, setDifficulty] = useState<
+    "EASY" | "MEDIUM" | "HARD" | "DuelXP"
+  >("DuelXP");
 
-  const handleThemeChange = (themes: "PINK" | "DARK" | "PURPLE" | "BLUE") => {
-    setThemes(themes);
-    localStorage.setItem("theme", themes);
-  };
-
-  const handleDifficultyChange = (difficulty: "EASY" | "MEDIUM" | "HARD" | "DuelXP") => {
+  const handleDifficultyChange = (
+    difficulty: "EASY" | "MEDIUM" | "HARD" | "DuelXP"
+  ) => {
     setDifficulty(difficulty);
   };
 
-  const { getAllUsers, users, loading, error } = useGetAllUsers();
+  const { getAllUsers, users } = useGetAllUsers();
   useEffect(() => {
     getAllUsers();
   }, [getAllUsers]);
@@ -61,27 +57,27 @@ const LeaderBoard = () => {
   return (
     <div
       className={`min-h-screen font-Teko flex flex-col ${
-        themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""
+        themes === "PINK" ? "bg-themePink text-black" : ""
       }
-        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""}
-        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""}
-        ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}`}
+        ${themes === "DARK" ? "bg-themeDark text-white" : ""}
+        ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
+        ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}`}
     >
-      <div className="sticky top-0 w-full flex flex-row-reverse justify-around gap-10 py-4 z-30">
-        <ThemeDropdown themes={themes} handleThemeChange={handleThemeChange} />
-        <DifficultyDropdown
+      <div className="flex justify-center py-4">
+        <Link to={"/"} className="underline text-3xl">
+          <p className="hover:rotate-2 font-semibold animate-pulse flex justify-center">
+            Let's Play
+          </p>
+        </Link>
+      </div>
+      <div className="flex justify-center items-center gap-2 mt-5">
+        <h1 className="text-2xl">Sort By :</h1><DifficultyDropdown
           difficulty={difficulty}
           handleDifficultyChange={handleDifficultyChange}
         />
       </div>
-      <Link to={"/"} className="underline text-3xl">
-        <p className="hover:rotate-2 font-semibold animate-pulse flex justify-center">
-          Let's Play
-        </p>
-      </Link>
-      <div className="mt-10">
-        {loading && <p>Loading users...</p>}
-        {error && <p>Error: {error}</p>}
+
+      <div className="mt-10 px-1 sm:px-60">
         <LeaderBoardList
           users={sortedUsers}
           themes={themes}

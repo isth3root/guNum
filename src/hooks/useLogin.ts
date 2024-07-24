@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useContext } from "react";
 import axiosInstance from "../utils/axiosInstance";
+import AppContext from "../context/AuthContext";
 
 interface User {
   _id: string;
   username: string;
-  password: string;
   score: {
     easy: number;
     medium: number;
@@ -21,22 +21,27 @@ interface AxiosError {
   };
 }
 
-export const useGetAllUsers = () => {
-  const [users, setUsers] = useState<User[]>([]);
+export const useLogin = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { setUser } = useContext(AppContext);
 
-  const getAllUsers = useCallback(async () => {
+  const login = async (username: string, password: string): Promise<User> => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await axiosInstance.get<User[]>("/users/all", {
-        withCredentials: true
+      const response = await axiosInstance.post<User>("/users/login", {
+        username,
+        password,
       });
-      setUsers(response.data);
+      const userData = response.data;
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+
+      return userData;
     } catch (err: any) {
-      console.error("Error during save score:", err);
+      console.error("Error during login", err);
       const axiosError = err as AxiosError;
       setError(
         axiosError.response ? axiosError.response.data.message : "Server error"
@@ -45,7 +50,7 @@ export const useGetAllUsers = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
-  return { getAllUsers, users, loading, error };
+  return { login, loading, error };
 };

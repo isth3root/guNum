@@ -28,7 +28,7 @@ const GameGrid: React.FC<GameGridProps> = ({
           <button
             key={index}
             onClick={() => handleClick(index)}
-            className={`text-5xl ${
+            className={`text-5xl select-none ${
               isCrossed
                 ? "line-through opacity-5 transition-all duration-1000 ease-in-out"
                 : ""
