@@ -170,10 +170,10 @@ const DuelGame = () => {
             />
           </div>
           <div className={`text-4xl sticky bottom-0 w-full left-0 z-20 text-center py-5
-             ${themes === "PINK" ? "bg-[#FFEFEF] text-black" : ""}
-        ${themes === "DARK" ? "bg-[#0C0C0C] text-white" : ""}
-        ${themes === "BLUE" ? "bg-[#4C3BCF] text-white" : ""}
-        ${themes === "PURPLE" ? "bg-[#4A249D] text-white" : ""}
+             ${themes === "PINK" ? "bg-themePink text-black" : ""}
+        ${themes === "DARK" ? "bg-themeDark text-white" : ""}
+        ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
+        ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
             `}>Guess Count : {guessCount}</div>
         </div>
       )}

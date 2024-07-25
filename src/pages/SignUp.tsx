@@ -50,7 +50,7 @@ const SignUp: React.FC<SignUpProps> = () => {
     localStorage.setItem("theme", theme);
   };
 
-  const themeItems: MenuProps["items"] = [
+  const themeMenuItems: MenuProps["items"] = [
     {
       key: "1",
       label: "PINK",
@@ -73,7 +73,9 @@ const SignUp: React.FC<SignUpProps> = () => {
     },
   ];
 
-  const dropdownMenu = <Menu items={themeItems} />;
+  const themeMenu = (
+    <Menu items={themeMenuItems} />
+  );
 
   return (
     <div
@@ -85,7 +87,7 @@ const SignUp: React.FC<SignUpProps> = () => {
         ${theme === "PURPLE" ? "bg-themePurple text-white" : ""}`}
     >
       <div className="absolute top-4 flex justify-center w-full">
-        <Dropdown overlay={dropdownMenu} trigger={["click"]}>
+        <Dropdown overlay={themeMenu} trigger={["click"]}>
           <a
             onClick={(e) => e.preventDefault()}
             className="text-3xl cursor-pointer select-none hover:rotate-6 transition-transform"

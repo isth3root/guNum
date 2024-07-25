@@ -9,6 +9,7 @@ import useDuelRequests from "../hooks/useDuelRequests";
 import useActiveDuels from "../hooks/useActiveDuels";
 
 import { Popover, Badge } from "antd";
+import { BiLogoTelegram } from "react-icons/bi";
 
 const Home = () => {
   const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
@@ -53,7 +54,7 @@ const Home = () => {
 
   return (
     <div
-      className={`relative flex flex-col min-h-screen font-Teko
+      className={`relative flex flex-col h-screen font-Teko
     ${themes === "PINK" ? "bg-themePink text-black" : ""}
     ${themes === "DARK" ? "bg-themeDark text-white" : ""}
     ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
@@ -63,16 +64,16 @@ const Home = () => {
       <div className="flex justify-between items-center flex-grow">
         <Link
           to="/single"
-          className={`text-3xl sm:text-4xl border-r gap-2  min-h-screen flex justify-center font-semibold flex-1 items-center transition-all duration-300
+          className={`text-3xl sm:text-4xl border-r gap-2  h-screen flex justify-center font-semibold flex-1 items-center transition-all duration-300
             ${themes === "DARK" ? "" : "border-black"}
             `}
         >
           Single Play
-          <LuSword />
+          <LuSword className="text-blue-600" />
         </Link>
         <Link
           to="/duel"
-          className="flex items-center gap-2 text-3xl sm:text-4xl justify-center flex-1 min-h-screen font-semibold transition-all duration-300"
+          className="flex items-center gap-2 text-3xl sm:text-4xl justify-center flex-1 h-screen font-semibold transition-all duration-300"
         >
           <div className="relative">
             <Badge
@@ -89,7 +90,7 @@ const Home = () => {
             ></Badge>
             <div className="flex gap-2">
               Duels
-              <LuSwords />
+              <LuSwords className="text-redLoser" />
             </div>
           </div>
         </Link>
@@ -105,24 +106,31 @@ const Home = () => {
       </div>
 
       {menuVisible && (
-        <div className="fixed flex bottom-16 left-1/2 text-black transform duration-100 transition-all -translate-x-1/2 bg-white justify-center shadow-lg rounded-lg w-32 px-20 py-1">
+        <div className="fixed flex bottom-16 left-1/2 text-black transform duration-100 transition-all gap-5 -translate-x-1/2 bg-white justify-center shadow-lg rounded-lg px-5 py-1">
           <Link
+          aria-label="profile"
+          title="Profile"
             to="/profile"
-            className="block px-4 py-2 rounded-full text-2xl"
+            className="block py-2 rounded-full text-2xl"
           >
-            <FiUser />
+            <FiUser color="red" />
           </Link>
-          <div className="block px-4 py-2 rounded-full text-2xl">
+          <div className="block py-2 rounded-full text-2xl">
             <Popover placement="top" content={themeContect}>
               <FiMoon />
             </Popover>
           </div>
           <Link
+          aria-label="leaderboard"
+          title="Leaderboard"
             to="/leaderboard"
-            className="block px-4 py-2 rounded-full text-2xl"
+            className="block py-2 rounded-full text-2xl"
           >
-            <MdOutlineLeaderboard />
+            <MdOutlineLeaderboard color="orange" />
           </Link>
+              <a href="https://t.me/gunumber" target="_blank" className="self-center" title="Telegram" aria-label="telegram">
+              <BiLogoTelegram className="text-2xl" color="blue" />
+              </a>
         </div>
       )}
     </div>

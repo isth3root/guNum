@@ -45,7 +45,7 @@ const Profile = () => {
 
   return (
     <div
-      className={` flex flex-col justify-between items-center gap-5 min-h-screen font-Teko
+      className={` flex flex-col justify-between items-center gap-5 h-screen font-Teko
         ${themes === "PINK" ? "bg-themePink text-black" : ""}
         ${themes === "DARK" ? "bg-themeDark text-white" : ""}
         ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
