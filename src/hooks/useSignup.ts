@@ -21,6 +21,10 @@ interface AxiosError {
   };
 }
 
+interface SignupResponse {
+  user: User,
+  token: string
+}
 export const useSignup = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,15 +35,17 @@ export const useSignup = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.post<User>("/users/signup", {
+      const response = await axiosInstance.post<SignupResponse>("/users/signup", {
         username,
         password,
       });
-      const userData = response.data;
-      localStorage.setItem("user", JSON.stringify(userData));
-      setUser(userData);
+      const {user, token} = response.data;
 
-      return userData;
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token)
+      setUser(user);
+
+      return user;
     } catch (err: any) {
       console.error("Error during sign up:", err);
       const axiosError = err as AxiosError;

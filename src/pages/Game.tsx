@@ -44,7 +44,6 @@ const Game = () => {
   const { user } = useContext(AuthContext);
   const { saveScore } = useSaveScore();
   
-
   const shuffleArray = (array: number[]): number[] => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -70,9 +69,16 @@ const Game = () => {
     }
     const newNumbers = Array.from({ length: maxNumber }, (_, i) => i + 1);
     setNumbers(newNumbers);
-    setShuffledIndices(
-      shuffleArray(Array.from({ length: maxNumber }, (_, i) => i))
-    );
+
+    // Conditional shuffling based on difficulty
+    if (difficulty === "EASY") {
+      setShuffledIndices(Array.from({ length: maxNumber }, (_, i) => i));
+    } else if (difficulty === "MEDIUM") {
+      setShuffledIndices(Array.from({ length: maxNumber }, (_, i) => i));
+    } else if (difficulty === "HARD") {
+      setShuffledIndices(shuffleArray(Array.from({ length: maxNumber }, (_, i) => i)));
+    }
+
     setToGuessNumber(Math.floor(Math.random() * maxNumber) + 1);
   }, [difficulty]);
 
@@ -127,7 +133,11 @@ const Game = () => {
     setCorrectGuess(null);
     setHighlightCorrectNumber(false);
     setShuffledIndices(
-      shuffleArray(Array.from({ length: numbers.length }, (_, i) => i))
+      difficulty === "EASY"
+        ? Array.from({ length: numbers.length }, (_, i) => i)
+        : difficulty === "MEDIUM"
+        ? Array.from({ length: numbers.length }, (_, i) => i)
+        : shuffleArray(Array.from({ length: numbers.length }, (_, i) => i))
     );
     setIsDifficultyModalVisible(false);
   };

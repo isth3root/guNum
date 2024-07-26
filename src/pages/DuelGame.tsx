@@ -1,12 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-
 import AuthContext from "../context/AuthContext";
-
 import useRecordDuelGuesses from "../hooks/useRecordDuelGuesses";
-
 import GameGrid from "../components/common/GameGrid";
 import ThemeDropdown from "../components/common/ThemeDropDown";
+
+type Theme = "PINK" | "DARK" | "PURPLE" | "BLUE";
 
 const DuelGame = () => {
   const { duelId } = useParams();
@@ -21,26 +20,29 @@ const DuelGame = () => {
   const [gameOver, setGameOver] = useState(false);
   const [highlightCorrectNumber, setHighlightCorrectNumber] = useState(false);
   const { user } = useContext(AuthContext);
-  const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
-    () => {
-      const storedTheme = localStorage.getItem("theme");
-      if (
-        storedTheme === "PINK" ||
-        storedTheme === "DARK" ||
-        storedTheme === "PURPLE" ||
-        storedTheme === "BLUE"
-      ) {
-        return storedTheme;
-      }
-      return "DARK";
-    }
-  );
+  const [themes, setThemes] = useState<Theme>(() => {
+    const storedTheme = sessionStorage.getItem("theme") as Theme;
+    return ["PINK", "DARK", "PURPLE", "BLUE"].includes(storedTheme) ? storedTheme : "DARK";
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedState = localStorage.getItem(`duelGameState-${duelId}`);
+    // Check if the game is completed
+    const isGameCompleted = sessionStorage.getItem(`gameCompleted-${duelId}`);
+
+    if (isGameCompleted) {
+      navigate("/duel");
+      return;
+    }
+
+    const savedState = sessionStorage.getItem(`duelGameState-${duelId}`);
     if (savedState) {
       const state = JSON.parse(savedState);
+      if (state.gameOver) {
+        sessionStorage.setItem(`gameCompleted-${duelId}`, "true");
+        navigate("/duel");
+        return;
+      }
       setNumbers(state.numbers);
       setShuffledIndices(state.shuffledIndices);
       setCrossedNumbers(state.crossedNumbers);
@@ -58,25 +60,18 @@ const DuelGame = () => {
           range = [1, 200];
           break;
       }
-
-      const nums = Array.from(
-        { length: range[1] - range[0] + 1 },
-        (_, i) => i + range[0]
-      );
-      const indices = nums
-        .map((_, index) => index)
-        .sort(() => Math.random() - 0.5);
-
+      const nums = Array.from({ length: range[1] - range[0] + 1 }, (_, i) => i + range[0]);
+      const indices = nums.map((_, index) => index).sort(() => Math.random() - 0.5);
       const randomCorrectNumber = nums[Math.floor(Math.random() * nums.length)];
-
       setNumbers(nums);
       setShuffledIndices(indices);
       setCorrectNumber(randomCorrectNumber);
     }
-  }, [difficulty, duelId]);
+  }, [difficulty, duelId, navigate]);
 
   useEffect(() => {
     if (!gameOver) {
+      // Store the game state only if the game is not over
       const state = {
         numbers,
         shuffledIndices,
@@ -86,7 +81,10 @@ const DuelGame = () => {
         gameOver,
         highlightCorrectNumber,
       };
-      localStorage.setItem(`duelGameState-${duelId}`, JSON.stringify(state));
+      sessionStorage.setItem(`duelGameState-${duelId}`, JSON.stringify(state));
+    } else {
+      // Clean up session storage when the game is over
+      sessionStorage.removeItem(`duelGameState-${duelId}`);
     }
   }, [
     numbers,
@@ -99,17 +97,12 @@ const DuelGame = () => {
     duelId,
   ]);
 
-  useEffect(() => {
-    if (gameOver) {
-      localStorage.removeItem(`duelGameState-${duelId}`);
-    }
-  }, [gameOver, duelId]);
-
   const handleClick = async (index: number) => {
     if (gameOver) return;
 
     const clickedNumber = numbers[index];
     if (correctNumber === null || duelId === undefined) return;
+    if (crossedNumbers.includes(clickedNumber)) return;
 
     if (clickedNumber === correctNumber) {
       if (user) {
@@ -119,35 +112,25 @@ const DuelGame = () => {
       }
       setHighlightCorrectNumber(true);
       setGameOver(true);
+      sessionStorage.setItem(`gameCompleted-${duelId}`, "true");
+      navigate("/duel");
     } else {
-      if (clickedNumber > correctNumber) {
-        setCrossedNumbers([
-          ...crossedNumbers,
-          ...numbers.filter((n) => n >= clickedNumber),
-        ]);
-      } else {
-        setCrossedNumbers([
-          ...crossedNumbers,
-          ...numbers.filter((n) => n <= clickedNumber),
-        ]);
-      }
+      const updatedCrossedNumbers = clickedNumber > correctNumber
+        ? [...crossedNumbers, ...numbers.filter((n) => n >= clickedNumber)]
+        : [...crossedNumbers, ...numbers.filter((n) => n <= clickedNumber)];
+      setCrossedNumbers(updatedCrossedNumbers);
       setGuessCount(guessCount + 1);
     }
   };
 
-  const handleThemeChange = (theme: "PINK" | "DARK" | "PURPLE" | "BLUE") => {
+  const handleThemeChange = (theme: Theme) => {
     setThemes(theme);
-    localStorage.setItem("theme", theme);
+    sessionStorage.setItem("theme", theme);
   };
-  useEffect(() => {
-    if (gameOver) {
-      navigate("/duel")
-    }
-  },[gameOver])
 
   return (
     <div
-      className={`flex flex-col min-h-screen items-center py-5 px-5 font-Teko
+      className={`flex flex-col min-h-screen items-center justify-around py-5 px-5 font-Teko
         ${themes === "PINK" ? "bg-themePink text-black" : ""}
         ${themes === "DARK" ? "bg-themeDark text-white" : ""}
         ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
@@ -158,25 +141,27 @@ const DuelGame = () => {
         <ThemeDropdown themes={themes} handleThemeChange={handleThemeChange} />
       </div>
       {!gameOver && (
-        <div className="">
-          <div>
-            <GameGrid
-              numbers={numbers}
-              shuffledIndices={shuffledIndices}
-              crossedNumbers={crossedNumbers}
-              correctGuess={correctNumber}
-              handleClick={handleClick}
-              highlightCorrectNumber={highlightCorrectNumber}
-            />
-          </div>
-          <div className={`text-4xl sticky bottom-0 w-full left-0 z-20 text-center py-5
-             ${themes === "PINK" ? "bg-themePink text-black" : ""}
-        ${themes === "DARK" ? "bg-themeDark text-white" : ""}
-        ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
-        ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
-            `}>Guess Count : {guessCount}</div>
+        <div>
+          <GameGrid
+            numbers={numbers}
+            shuffledIndices={shuffledIndices}
+            crossedNumbers={crossedNumbers}
+            correctGuess={correctNumber}
+            handleClick={handleClick}
+            highlightCorrectNumber={highlightCorrectNumber}
+          />
         </div>
       )}
+      <div
+        className={`text-4xl sticky bottom-0 w-full left-0 z-20 text-center py-5
+              ${themes === "PINK" ? "bg-themePink text-black" : ""}
+              ${themes === "DARK" ? "bg-themeDark text-white" : ""}
+              ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
+              ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
+            `}
+      >
+        Guess Count : {guessCount}
+      </div>
     </div>
   );
 };

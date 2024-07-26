@@ -31,9 +31,7 @@ export const useGetAllUsers = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.get<User[]>("/users/all", {
-        withCredentials: true
-      });
+      const response = await axiosInstance.get<User[]>("/users/all");
       setUsers(response.data);
     } catch (err: any) {
       console.error("Error during save score:", err);

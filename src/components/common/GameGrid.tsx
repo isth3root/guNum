@@ -18,7 +18,7 @@ const GameGrid: React.FC<GameGridProps> = ({
   highlightCorrectNumber,
 }) => {
   return (
-    <div className="grid grid-cols-5 gap-2">
+    <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
       {shuffledIndices.map((index) => {
         const number = numbers[index];
         const isCrossed = crossedNumbers.includes(number);

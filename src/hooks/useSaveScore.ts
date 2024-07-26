@@ -40,12 +40,11 @@ export const useSaveScore = () => {
 
       const updatedUser = response.data;
 
-      // Retrieve the user data from localStorage
       const userData = localStorage.getItem("user");
       if (userData) {
         const parsedUserData = JSON.parse(userData);
 
-        // Ensure the score object exists
+
         if (!parsedUserData.score) {
           parsedUserData.score = {
             easy: Infinity,
@@ -54,7 +53,6 @@ export const useSaveScore = () => {
           };
         }
 
-        // Update the relevant score based on difficulty
         switch (difficulty) {
           case "EASY":
             parsedUserData.score.easy = updatedUser.score;
@@ -69,7 +67,6 @@ export const useSaveScore = () => {
             throw new Error("Invalid difficulty level");
         }
 
-        // Save the updated user data back to localStorage
         localStorage.setItem("user", JSON.stringify(parsedUserData));
       }
 
