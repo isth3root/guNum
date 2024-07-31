@@ -13,12 +13,22 @@ import Duel from "./pages/Duel";
 import DuelGame from "./pages/DuelGame";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import GuWord from "./pages/GuWord";
+import GuNumber from "./pages/GuNumber"
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
   return (
     <Router>
       <Routes>
+      <Route
+          path="/gunumber"
+          element={user ? <GuNumber /> : <Navigate to="/signup" replace />}
+        />
+      <Route
+          path="/guword"
+          element={user ? <GuWord /> : <Navigate to="/signup" replace />}
+        />
       <Route
           path="/profile"
           element={user ? <Profile /> : <Navigate to="/signup" replace />}

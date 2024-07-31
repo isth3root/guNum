@@ -23,7 +23,7 @@ interface AxiosError {
 
 interface LoginResponse {
   user: User;
-  token: string
+  token: string;
 }
 
 export const useLogin = () => {
@@ -40,14 +40,15 @@ export const useLogin = () => {
         username,
         password,
       });
-      const {user, token} = response.data;
+
+      const { user, token } = response.data;
       localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", token)
+      localStorage.setItem("token", token);
       setUser(user);
 
       return user;
     } catch (err: any) {
-      console.error("Error during login", err);
+      console.error("Login request error:", err);
       const axiosError = err as AxiosError;
       setError(
         axiosError.response ? axiosError.response.data.message : "Server error"
