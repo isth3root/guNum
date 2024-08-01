@@ -14,14 +14,14 @@ export const useGetWord = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getWord = useCallback(async (subject: string, difficulty: string, language: "English" | "Persian") => {
+  const getWord = useCallback(async (subject: string, language: "English" | "Persian") => {
     setLoading(true);
     setError(null);
 
 
     try {
       const response = await axiosInstance.get<{ word: string }>(`/word/single`, {
-        params: { subject, difficulty, language },
+        params: { subject, language },
       });
       
       if (response.data.word) {

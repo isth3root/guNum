@@ -5,13 +5,11 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from '../utils/i18n';
 
-const subjects = ['cars', 'countries', 'colors', 'animals', 'technology'];
-const difficulties = ['easy', 'medium', 'hard'];
+const subjects = ['cars', 'countries', 'footballplayer', 'animals', 'technology'];
 
 const GuWord: React.FC = () => {
   const { t } = useTranslation();
   const [selectedSubject, setSelectedSubject] = useState<string>('');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
   const [selectedLanguage, setSelectedLanguage] = useState<'English' | 'Persian'>('English');
   const [showInputs, setShowInputs] = useState<boolean>(false);
   const [correctWord, setCorrectWord] = useState<string>('');
@@ -49,9 +47,9 @@ const GuWord: React.FC = () => {
   }, [showInputs, gameOver]);
 
   const handleFetchWord = async () => {
-    if (selectedSubject && selectedDifficulty) {
+    if (selectedSubject) {
       try {
-        await getWord(selectedSubject, selectedDifficulty, selectedLanguage);
+        await getWord(selectedSubject, selectedLanguage);
       } catch (err) {
         message.error('Failed to fetch the word. Please try again.');
       }
@@ -64,9 +62,6 @@ const GuWord: React.FC = () => {
     setSelectedSubject(event.target.value);
   };
 
-  const handleDifficultyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDifficulty(event.target.value);
-  };
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLanguage(event.target.value as 'English' | 'Persian');
@@ -102,7 +97,6 @@ const GuWord: React.FC = () => {
 
   const handleNewGame = () => {
     setSelectedSubject('');
-    setSelectedDifficulty('');
     setSelectedLanguage('English');
     setShowInputs(false);
     setCorrectWord('');
@@ -152,24 +146,6 @@ const GuWord: React.FC = () => {
                 ))}
               </select>
             </div>
-            <div className="mb-4">
-              <label className="block text-xl mb-2">{t('difficulty')}</label>
-              <select
-                value={selectedDifficulty}
-                onChange={handleDifficultyChange}
-                className={`px-4 py-2 w-full text-lg
-                  ${themes === "PINK" ? "bg-gray-300 text-black" : ""}
-                  ${themes === "DARK" ? "bg-gray-700 text-white" : ""}
-                  ${themes === "BLUE" ? "bg-gray-300 text-black" : ""}
-                  ${themes === "PURPLE" ? "bg-gray-600 text-white" : ""}
-                  `}
-              >
-                <option value="">{t('selectDifficulty')}</option>
-                {difficulties.map((difficulty) => (
-                  <option key={difficulty} value={difficulty}>{difficulty}</option>
-                ))}
-              </select>
-            </div>
             <div className="mb-6">
               <label className="block text-xl mb-2">{t('language')}</label>
               <select
@@ -199,7 +175,7 @@ const GuWord: React.FC = () => {
           <>
             {correctWord && (
               <>
-                <div className="flex justify-around items-center mb-8 flex-wrap">
+                <div className="flex justify-center items-center mb-8 flex-wrap">
                   <h1 className="text-3xl">
                     {selectedSubject === "cars" && isPersian ? "ماشین‌ها" :
                     selectedSubject === "countries" && isPersian ? "کشورها" :
@@ -213,15 +189,6 @@ const GuWord: React.FC = () => {
                     selectedSubject === "technology" ? "Technology" :
                     "Select Subject"}
                   </h1>
-                  <h2 className="text-3xl">
-                    {selectedDifficulty === "easy" && isPersian ? "آسان" : 
-                    selectedDifficulty === "medium" && isPersian ? "متوسط" :
-                    selectedDifficulty === "hard" && isPersian ? "سخت" :
-                    selectedDifficulty === "easy" ? "Easy" :
-                    selectedDifficulty === "medium" ? "Medium" :
-                    selectedDifficulty === "hard" ? "Hard" :
-                    "Select Difficulty"}
-                  </h2>
                 </div>
                 <div className='mb-6 text-center'>
                   <div className={`flex justify-center px-5 flex-wrap`} dir={isPersian ? 'rtl' : 'ltr'}>
