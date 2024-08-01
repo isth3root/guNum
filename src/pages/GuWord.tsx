@@ -177,15 +177,15 @@ const GuWord: React.FC = () => {
               <>
                 <div className="flex justify-center items-center mb-8 flex-wrap">
                   <h1 className="text-3xl">
-                    {selectedSubject === "cars" && isPersian ? "ماشین‌ها" :
-                    selectedSubject === "countries" && isPersian ? "کشورها" :
-                    selectedSubject === "colors" && isPersian ? "رنگ‌ها" :
-                    selectedSubject === "animals" && isPersian ? "حیوانات" :
+                    {selectedSubject === "cars" && isPersian ? "ماشین" :
+                    selectedSubject === "countries" && isPersian ? "کشور" :
+                    selectedSubject === "footballplayer" && isPersian ? "بازیکن فوتبال" :
+                    selectedSubject === "animals" && isPersian ? "حیوان" :
                     selectedSubject === "technology" && isPersian ? "فناوری" :
-                    selectedSubject === "cars" ? "Cars" :
-                    selectedSubject === "countries" ? "Countries" :
-                    selectedSubject === "colors" ? "Colors" :
-                    selectedSubject === "animals" ? "Animals" :
+                    selectedSubject === "cars" ? "Car" :
+                    selectedSubject === "countries" ? "Country" :
+                    selectedSubject === "footballplayer" ? "Football Player" :
+                    selectedSubject === "animals" ? "Animal" :
                     selectedSubject === "technology" ? "Technology" :
                     "Select Subject"}
                   </h1>
@@ -209,7 +209,7 @@ const GuWord: React.FC = () => {
                   <input
                     type="text"
                     name="guess"
-                    ref={inputRef} // Attach the ref to the input
+                    ref={inputRef}
                     className={`w-full px-4 py-2 mb-4 bg-gray-700 border border-gray-600 text-gray-300 text-xl self-center uppercase outline-none ${isPersian ? 'rtl' : ''}`}
                     placeholder={isPersian ? "حرف را وارد کن" : "Enter a letter"}
                     maxLength={1}

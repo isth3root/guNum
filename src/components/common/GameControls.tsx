@@ -21,9 +21,9 @@ const GameControls: React.FC<GameControlsProps> = ({
             guessCount <= 1 ? "guess" : "guesses"
           }`}</h1> : <h1 className="select-none text-2xl font-Yekan">{`شما با ${guessCount} حدس عدد را پیدا کردید`}</h1>
       )}
-      {!gameOver && <div className="text-2xl">{t('guessCount')} : {guessCount}</div>}
+      {!gameOver && <div className={`text-2xl ${i18n.language === 'en' ? "" : "font-Yekan"}`}>{t('guessCount')} : {guessCount}</div>}
       <button
-        className={`select-none mb-5 text-xl hover:shadow-lg rounded-md py-2 px-5
+        className={`select-none mb-5 text-xl hover:shadow-lg rounded-md py-2 px-5 ${i18n.language === 'en' ? "" : "font-Yekan"}
         ${themes === "PINK" ? "bg-black text-white" : ""}
         ${themes === "DARK" ? "bg-white text-black" : ""}
         ${themes === "BLUE" ? "bg-white text-black" : ""}

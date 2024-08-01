@@ -20,7 +20,6 @@ const Home = () => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
-    // Retrieve the stored language from localStorage and initialize i18n
     const storedLanguage = localStorage.getItem("language");
     if (storedLanguage) {
       i18n.changeLanguage(storedLanguage);
@@ -66,7 +65,7 @@ const Home = () => {
             ${themes === "DARK" ? "" : "border-black"}
             `}
         >
-          <div className="relative flex items-center justify-center">
+          <div className={`relative flex items-center justify-center ${i18n.language === 'en' ? "" : "font-Yekan"}`}>
             <div className={`absolute top-9 left-2 text-3xl rotate-12 ${themes === "PINK" ? "text-black" : "text-themePink"}`}>5</div>
             <div className={`absolute bottom-10 left-2 text-4xl -rotate-12 ${themes === "BLUE" ? "text-black" : "text-themeBlue"}`}>8</div>
             <div className="absolute top-7 right-3 text-3xl -rotate-12 text-yellow-200">3</div>
@@ -78,7 +77,7 @@ const Home = () => {
           to="/guword"
           className="relative flex flex-col items-center gap-2 text-3xl sm:text-4xl justify-center flex-1 h-screen font-semibold transition-all duration-300"
         >
-          <div className="relative flex flex-col items-center">
+          <div className={`relative flex flex-col items-center ${i18n.language === 'en' ? "" : "font-Yekan"}`}>
             <div className="absolute -bottom-7 -left-4 text-2xl rotate-12 text-sky-300">{t('B')}</div>
             <div className="absolute -top-6 -left-2 text-2xl -rotate-12 text-purple-500">{t('A')}</div>
             <div className="absolute -top-9 right-2 text-2xl rotate-12 text-green-400">{t('M')}</div>
