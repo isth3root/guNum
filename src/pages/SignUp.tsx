@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, message, Dropdown, Menu } from "antd";
 import type { MenuProps } from "antd";
 import { useLogin } from "../hooks/useLogin";
 import { useSignup } from "../hooks/useSignup";
+import { useTranslation } from "react-i18next";
+import i18n from "../utils/i18n";
 
 interface SignUpProps {}
 
 const SignUp: React.FC<SignUpProps> = () => {
+  const { t } = useTranslation();
   const [theme, setTheme] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
     () => (localStorage.getItem("theme") as "PINK" | "DARK" | "PURPLE" | "BLUE") || "DARK"
   );
@@ -21,15 +24,22 @@ const SignUp: React.FC<SignUpProps> = () => {
   const { login, loading: loadingLogin, error: errorLogin } = useLogin();
   const { signup, loading: loadingSignup, error: errorSignup } = useSignup();
 
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem("language");
+    if (storedLanguage) {
+      i18n.changeLanguage(storedLanguage);
+    }
+  }, []);
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await login(userNameLogin, passwordLogin);
-      message.success("Welcome");
+      message.success(t("welcome"));
       setUserNameLogin("");
       setPasswordLogin("");
     } catch {
-      message.error(errorLogin || "Failed to log in");
+      message.error(errorLogin || t("loginFailed"));
     }
   };
 
@@ -37,11 +47,11 @@ const SignUp: React.FC<SignUpProps> = () => {
     e.preventDefault();
     try {
       await signup(usernameSignup, passwordSignup);
-      message.success("Welcome");
+      message.success(t("welcome"));
       setUsernameSignup("");
       setPasswordSignup("");
     } catch {
-      message.error(errorSignup || "Failed to sign up");
+      message.error(errorSignup || t("signupFailed"));
     }
   };
 
@@ -51,40 +61,25 @@ const SignUp: React.FC<SignUpProps> = () => {
   };
 
   const themeMenuItems: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "PINK",
-      onClick: () => handleThemeChange("PINK"),
-    },
-    {
-      key: "2",
-      label: "DARK",
-      onClick: () => handleThemeChange("DARK"),
-    },
-    {
-      key: "3",
-      label: "BLUE",
-      onClick: () => handleThemeChange("BLUE"),
-    },
-    {
-      key: "4",
-      label: "PURPLE",
-      onClick: () => handleThemeChange("PURPLE"),
-    },
+    { key: "1", label: "PINK", onClick: () => handleThemeChange("PINK") },
+    { key: "2", label: "DARK", onClick: () => handleThemeChange("DARK") },
+    { key: "3", label: "BLUE", onClick: () => handleThemeChange("BLUE") },
+    { key: "4", label: "PURPLE", onClick: () => handleThemeChange("PURPLE") },
   ];
 
-  const themeMenu = (
-    <Menu items={themeMenuItems} />
-  );
+  const themeMenu = <Menu items={themeMenuItems} />;
+
+  const language = i18n.language;
+  const isEnglish = language === 'en';
 
   return (
     <div
-      className={`flex flex-col items-center justify-center font-Teko h-screen ${
+      className={`flex flex-col items-center justify-center ${isEnglish ? "font-Teko" : "font-Yekan"} h-screen ${
         theme === "PINK" ? "bg-themePink text-black" : ""
       }
-        ${theme === "DARK" ? "bg-themeDark text-white" : ""} 
-        ${theme === "BLUE" ? "bg-themeBlue text-white" : ""} 
-        ${theme === "PURPLE" ? "bg-themePurple text-white" : ""}`}
+      ${theme === "DARK" ? "bg-themeDark text-white" : ""}
+      ${theme === "BLUE" ? "bg-themeBlue text-white" : ""}
+      ${theme === "PURPLE" ? "bg-themePurple text-white" : ""}`}
     >
       <div className="absolute top-4 flex justify-center w-full">
         <Dropdown overlay={themeMenu} trigger={["click"]}>
@@ -99,67 +94,89 @@ const SignUp: React.FC<SignUpProps> = () => {
 
       <div className="flex flex-col items-center justify-center flex-grow">
         {isSignUp ? (
-          <form className="flex flex-col gap-5" onSubmit={handleSignup}>
-            <h1 className="text-3xl select-none">Signup</h1>
+          <form dir={isEnglish ? "ltr" : "rtl"} className="flex flex-col gap-5" onSubmit={handleSignup}>
+            <h1 className="text-3xl select-none">{t('signup')}</h1>
             <Input
-              addonBefore="@"
-              placeholder="Username"
+              placeholder={isEnglish ? "Username" : "آیدی"}
               className="w-72 sm:w-80"
               value={usernameSignup}
               onChange={(e) => setUsernameSignup(e.target.value)}
               maxLength={10}
             />
             <Input.Password
-              placeholder="Password"
+              placeholder={isEnglish ? "Password" : "رمز"}
               className="w-72 sm:w-80"
               value={passwordSignup}
               onChange={(e) => setPasswordSignup(e.target.value)}
             />
             <button
-              className={`text-white w-72 sm:w-80 rounded-md py-2 ${theme === "PINK" ? "bg-[#FF7777]" : ""} ${theme === "DARK" ? "bg-[#405D72]" : ""} ${theme === "BLUE" ? "bg-[#667BC6]" : ""} ${theme === "PURPLE" ? "bg-[#E4003A]" : ""}`}
+              className={`text-white w-72 sm:w-80 rounded-md py-2 ${
+                theme === "PINK" ? "bg-[#FF7777]" : ""
+              } ${theme === "DARK" ? "bg-[#FF4E88]" : ""} ${
+                theme === "BLUE" ? "bg-[#667BC6]" : ""
+              } ${theme === "PURPLE" ? "bg-[#E4003A]" : ""}`}
               type="submit"
               disabled={loadingSignup}
             >
-              <p className="text-2xl">{loadingSignup ? "Loading..." : "Continue"}</p>
+              <p className="text-2xl">
+                {loadingSignup
+                  ? isEnglish
+                    ? "Loading..."
+                    : "ثبت کاربر..."
+                  : isEnglish
+                    ? "Sign Up"
+                    : "ثبتنام"}
+              </p>
             </button>
             <button
-              className="text-center text-3xl underline"
+              className={`text-center ${isEnglish ? "text-2xl" : "text-xl"}`}
               type="button"
               onClick={() => setIsSignUp((prev) => !prev)}
             >
-              Login here
+              {t('loginHere')}
             </button>
           </form>
         ) : (
-          <form className="flex flex-col gap-5" onSubmit={handleLogin}>
-            <h1 className="text-3xl select-none">Login</h1>
+          <form dir={isEnglish ? "ltr" : "rtl"} className="flex flex-col gap-5" onSubmit={handleLogin}>
+            <h1 className="text-3xl select-none">{t('login')}</h1>
             <Input
-              addonBefore="@"
-              placeholder="Username"
+              placeholder={isEnglish ? "Username" : "آیدی"}
               className="w-72 sm:w-80"
               value={userNameLogin}
               onChange={(e) => setUserNameLogin(e.target.value)}
               maxLength={10}
             />
             <Input.Password
-              placeholder="Password"
+              placeholder={isEnglish ? "Password" : "رمز"}
               className="w-72 sm:w-80"
               value={passwordLogin}
               onChange={(e) => setPasswordLogin(e.target.value)}
             />
             <button
-              className={`text-white w-72 sm:w-80 rounded-md py-2 ${theme === "PINK" ? "bg-[#FF7777]" : ""} ${theme === "DARK" ? "bg-[#405D72]" : ""} ${theme === "BLUE" ? "bg-[#667BC6]" : ""} ${theme === "PURPLE" ? "bg-[#E4003A]" : ""}`}
+              className={`text-white w-72 sm:w-80 rounded-md py-2 ${
+                theme === "PINK" ? "bg-[#FF7777]" : ""
+              } ${theme === "DARK" ? "bg-[#7C00FE]" : ""} ${
+                theme === "BLUE" ? "bg-[#667BC6]" : ""
+              } ${theme === "PURPLE" ? "bg-[#E4003A]" : ""}`}
               type="submit"
               disabled={loadingLogin}
             >
-              <p className="text-2xl">{loadingLogin ? "Loading..." : "Continue"}</p>
+              <p className="text-2xl">
+                {loadingLogin
+                  ? isEnglish
+                    ? "Loading..."
+                    : "لودکردن بازی"
+                  : isEnglish
+                    ? "Login"
+                    : "ورود"}
+              </p>
             </button>
             <button
-              className="text-center text-3xl underline"
+              className={`text-center ${isEnglish ? "text-2xl" : "text-xl"}`}
               type="button"
               onClick={() => setIsSignUp((prev) => !prev)}
             >
-              Signup here
+              {t('signupHere')}
             </button>
           </form>
         )}

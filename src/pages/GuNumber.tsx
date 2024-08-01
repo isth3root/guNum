@@ -4,10 +4,13 @@ import { LuSword, LuSwords } from "react-icons/lu";
 import AppContext from "../context/AuthContext";
 import useDuelRequests from "../hooks/useDuelRequests";
 import useActiveDuels from "../hooks/useActiveDuels";
+import { useTranslation } from 'react-i18next';
+import i18n from "../utils/i18n";
 
 import { Badge } from "antd";
 
 const Home = () => {
+  const { t } = useTranslation();
   const [themes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
     () => {
       const storedTheme = localStorage.getItem("theme");
@@ -31,7 +34,7 @@ const Home = () => {
 
   return (
     <div
-      className={`relative flex flex-col h-screen font-Teko
+      className={`relative flex flex-col h-screen ${i18n.language === "en" ? "font-Teko" : "font-Yekan"}
     ${themes === "PINK" ? "bg-themePink text-black" : ""}
     ${themes === "DARK" ? "bg-themeDark text-white" : ""}
     ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
@@ -45,7 +48,7 @@ const Home = () => {
             ${themes === "DARK" ? "" : "border-black"}
             `}
         >
-          Single Play
+          {t('Single Play')}
           <LuSword className="text-blue-600" />
         </Link>
         <Link
@@ -66,7 +69,7 @@ const Home = () => {
               color="blue"
             ></Badge>
             <div className="flex gap-2">
-              Duels
+              {t('Duels')}
               <LuSwords className="text-redLoser" />
             </div>
           </div>

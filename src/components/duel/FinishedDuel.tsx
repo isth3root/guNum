@@ -4,7 +4,8 @@ import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
 import useFinishedDuels from "../../hooks/useFinishedDuels";
 import useDeleteDuel from "../../hooks/useDeleteDuel";
-
+import { useTranslation } from "react-i18next";
+import i18n from "../../utils/i18n";
 interface User {
   _id: string;
   username: string;
@@ -21,6 +22,7 @@ interface FinishedProps {
 }
 
 const FinishedDuels: React.FC<FinishedProps> = ({ users }) => {
+  const {t} = useTranslation()
   const { user } = useContext(AuthContext);
   const {
     duels: finishedDuels,
@@ -39,11 +41,11 @@ const FinishedDuels: React.FC<FinishedProps> = ({ users }) => {
   return (
     <div>
       {finishedDuels.length === 0 ? (
-         <p className={`text-center text-3xl font-semibold font-Teko py-5
+         <p className={`text-center py-5 ${i18n.language === 'en' ? "text-3xl font-semibold font-Teko" : "font-Yekan text-2xl"}
             ${theme === "PINK" ? "text-black" : ""}
             ${theme === "DARK" || theme === "BLUE" || theme === "PURPLE" ? "text-white" : ""}
         `}>
-          You have no Finished duel.
+          {t('finished message')}
         </p>
       ) : (
         <div className="flex flex-col gap-5 font-Teko">

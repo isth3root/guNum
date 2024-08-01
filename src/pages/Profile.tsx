@@ -1,27 +1,39 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { useDeleteAccount } from "../hooks/useDeleteAccount";
 import { Modal, Input } from "antd";
 import { useLogout } from "../hooks/useLogout";
+import { useTranslation } from "react-i18next";
+import i18n from "../utils/i18n";
 
 const Profile = () => {
-  const [themes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(() => {
-    const storedTheme = localStorage.getItem("theme");
-    return (storedTheme as "PINK" | "DARK" | "PURPLE" | "BLUE") || "DARK";
-  });
+  const { t } = useTranslation();
+  const [themes, setThemes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">("DARK");
+  const [language, setLanguage] = useState("en");
   const { user, setUser } = useContext(AuthContext);
   const { deleteAccount } = useDeleteAccount();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [password, setPassword] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { logout } = useLogout();
+
+  useEffect(() => {
+    // Set theme from localStorage
+    const storedTheme = localStorage.getItem("theme") as "PINK" | "DARK" | "PURPLE" | "BLUE";
+    setThemes(storedTheme || "DARK");
+
+    // Set language from localStorage
+    const storedLanguage = localStorage.getItem("language") || "en";
+    setLanguage(storedLanguage);
+    i18n.changeLanguage(storedLanguage); // Ensure i18next uses the stored language
+  }, []);
 
   const handleLogOut = () => {
     setUser(null);
     localStorage.removeItem("user");
     logout(user!.username);
-    navigate("/signup")
+    navigate("/signup");
   };
 
   const handleOk = async () => {
@@ -29,7 +41,7 @@ const Profile = () => {
       try {
         await deleteAccount(user.username);
         handleLogOut();
-        navigate("/signup")
+        navigate("/signup");
       } catch (error) {
         console.error("Error deleting account:", error);
       }
@@ -45,45 +57,48 @@ const Profile = () => {
 
   return (
     <div
-      className={` flex flex-col justify-between items-center gap-5 h-screen font-Teko
+      className={`flex flex-col justify-between items-center gap-5 h-screen font-Teko
         ${themes === "PINK" ? "bg-themePink text-black" : ""}
         ${themes === "DARK" ? "bg-themeDark text-white" : ""}
         ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
         ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
-        `}
+      `}
     >
-      <div className="">
-        <Link to={"/"} className="text-3xl mt-5 underline">
-          Home
+      <div className="w-full flex justify-center px-5">
+        <Link to="/" className="text-3xl mt-5 underline">
+          {t('Home')}
         </Link>
       </div>
-      <h1 className=" text-3xl px-10 text-center">
-        Logged In as <span className="text-red-500 underline">{user?.username}</span>
+      <h1 dir={language === 'en' ? "ltr" : "rtl"} className="text-3xl px-10 text-center">
+        {t('loggedInAs')}: <span className="text-red-500 underline">{user?.username}</span>
       </h1>
-      <div className="flex gap-10 mb-5 text-3xl">
+      <div className={`flex gap-10 mb-5 ${language === 'en' ? "text-3xl" : "text-xl"}`}>
         <button className="text-orange-500" onClick={handleLogOut}>
-          Log out
+          {t('logout')}
         </button>
         <button
-          className="text-redLoser"
+          className="text-red-500"
           onClick={() => setIsModalVisible(true)}
         >
-          Delete account
+          {t('deleteAccount')}
         </button>
       </div>
       <Modal
-        title="Delete Account"
+        title={language === "en" ? "Delete Account" : "حذف حساب"}
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        okText="Delete"
+        cancelText={language === 'en' ? "Cancel" : "لغو"}
+        okText={language === 'en' ? "Delete" : "حذف"}
         okButtonProps={{ danger: true }}
+        className={language === 'en' ? "ltr" : "rtl"}
       >
-        <p>Please enter your username to delete your account:</p>
+        <p>{t('deleteAccountText')}</p>
         <Input
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="username"
+          placeholder={language === 'en' ? "Enter your password" : "رمز عبور خود را وارد کنید"}
         />
       </Modal>
     </div>

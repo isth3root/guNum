@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useGetWord } from '../hooks/useGetWord';
 import { message } from 'antd';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import i18n from '../utils/i18n';
 
 const subjects = ['cars', 'countries', 'colors', 'animals', 'technology'];
 const difficulties = ['easy', 'medium', 'hard'];
 
 const GuWord: React.FC = () => {
+  const { t } = useTranslation();
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
   const [selectedLanguage, setSelectedLanguage] = useState<'English' | 'Persian'>('English');
@@ -25,6 +28,7 @@ const GuWord: React.FC = () => {
   );
 
   const maxWrongGuesses = 6;
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (word) {
@@ -37,6 +41,12 @@ const GuWord: React.FC = () => {
       setGameOver(false);
     }
   }, [word]);
+
+  useEffect(() => {
+    if (inputRef.current && !gameOver) {
+      inputRef.current.focus();
+    }
+  }, [showInputs, gameOver]);
 
   const handleFetchWord = async () => {
     if (selectedSubject && selectedDifficulty) {
@@ -110,22 +120,21 @@ const GuWord: React.FC = () => {
     form.reset();
   };
 
-  const isPersian = selectedLanguage === 'Persian';
+  const isPersian = i18n.language === 'fa';
 
   return (
-    <div className={`min-h-screen text-white flex flex-col items-center justify-center p-6 font-Teko select-none
+    <div className={`min-h-screen text-white flex flex-col items-center justify-center p-6 font-Yekan select-none
     ${themes === "PINK" ? "bg-themePink text-black" : ""}
     ${themes === "DARK" ? "bg-themeDark text-white" : ""}
     ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
     ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
     `}>
-      <Link to={"/"} className='text-2xl mb-10 underline'>خانه</Link>
-      <div dir='rtl' className="p-8 max-w-md w-full">
+      <Link to={"/"} className='text-2xl mb-10 underline'>{t('Home')}</Link>
+      <div dir={isPersian ? "rtl" : "ltr"} className="p-8 max-w-md w-full">
         {!showInputs ? (
           <>
-            {/* <h1 className="text-3xl mb-6 text-center">انتخاب کنید</h1> */}
             <div className="mb-4">
-              <label className="block text-xl mb-2">موضوع:</label>
+              <label className="block text-xl mb-2">{t('subject')}</label>
               <select
                 value={selectedSubject}
                 onChange={handleSubjectChange}
@@ -137,14 +146,14 @@ const GuWord: React.FC = () => {
                   
                   `}
               >
-                <option value="">انتخاب موضوع</option>
+                <option value="">{t('selectSubject')}</option>
                 {subjects.map((subject) => (
                   <option key={subject} value={subject} className='text-xl'>{subject}</option>
                 ))}
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-xl mb-2">سطح :</label>
+              <label className="block text-xl mb-2">{t('difficulty')}</label>
               <select
                 value={selectedDifficulty}
                 onChange={handleDifficultyChange}
@@ -155,14 +164,14 @@ const GuWord: React.FC = () => {
                   ${themes === "PURPLE" ? "bg-gray-600 text-white" : ""}
                   `}
               >
-                <option value="">انتخاب سطح</option>
+                <option value="">{t('selectDifficulty')}</option>
                 {difficulties.map((difficulty) => (
                   <option key={difficulty} value={difficulty}>{difficulty}</option>
                 ))}
               </select>
             </div>
             <div className="mb-6">
-              <label className="block text-xl mb-2">زبان :</label>
+              <label className="block text-xl mb-2">{t('language')}</label>
               <select
                 value={selectedLanguage}
                 onChange={handleLanguageChange}
@@ -173,8 +182,8 @@ const GuWord: React.FC = () => {
                   ${themes === "PURPLE" ? "bg-gray-600 text-white" : ""}
                   `}
               >
-                <option value="English">انگلیسی</option>
-                <option value="Persian">فارسی</option>
+                <option value="English">{t('English')}</option>
+                <option value="Persian">{t('Persian')}</option>
               </select>
             </div>
             <button
@@ -182,7 +191,7 @@ const GuWord: React.FC = () => {
               onClick={handleFetchWord}
               disabled={loading}
             >
-              {loading ? 'لودینگ' : 'شروع'}
+              {loading ? isPersian ? 'لودینگ' : "loading..." : isPersian ? 'شروع' : "Start"}
             </button>
             {error && <p className="text-red-400 mt-4 text-center">{error}</p>}
           </>
@@ -215,7 +224,7 @@ const GuWord: React.FC = () => {
                   </h2>
                 </div>
                 <div className='mb-6 text-center'>
-                  <div className={`flex justify-center`} dir={isPersian ? 'rtl' : 'ltr'}>
+                  <div className={`flex justify-center px-5 flex-wrap`} dir={isPersian ? 'rtl' : 'ltr'}>
                     {displayWord.split('').map((letter, index) => (
                       <span key={index} className="text-3xl mx-1 uppercase tracking-tighter">
                         {letter}
@@ -233,6 +242,7 @@ const GuWord: React.FC = () => {
                   <input
                     type="text"
                     name="guess"
+                    ref={inputRef} // Attach the ref to the input
                     className={`w-full px-4 py-2 mb-4 bg-gray-700 border border-gray-600 text-gray-300 text-xl self-center uppercase outline-none ${isPersian ? 'rtl' : ''}`}
                     placeholder={isPersian ? "حرف را وارد کن" : "Enter a letter"}
                     maxLength={1}

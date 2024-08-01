@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import i18n from "../../utils/i18n";
 interface GameControlsProps {
   themes: "PINK" | "DARK" | "PURPLE" | "BLUE";
   gameOver: boolean;
@@ -11,25 +13,24 @@ const GameControls: React.FC<GameControlsProps> = ({
   guessCount,
   handleNewGame,
 }) => {
+  const {t} = useTranslation()
   return (
     <div className="flex flex-col items-center sticky bottom-0 left-0 z-20 bg-inherit w-full pt-5">
       {gameOver && (
-        <div className="flex flex-col gap-4 items-center">
-          <h1 className="select-none text-3xl">{`You guessed the number with ${guessCount} ${
+          i18n.language === 'en' ? <h1 className="select-none text-2xl">{`You guessed the number with ${guessCount} ${
             guessCount <= 1 ? "guess" : "guesses"
-          }`}</h1>
-        </div>
+          }`}</h1> : <h1 className="select-none text-2xl font-Yekan">{`شما با ${guessCount} حدس عدد را پیدا کردید`}</h1>
       )}
-      {!gameOver && <div className="text-2xl">Guess Count : {guessCount}</div>}
+      {!gameOver && <div className="text-2xl">{t('guessCount')} : {guessCount}</div>}
       <button
-        className={`select-none mb-5 text-2xl hover:shadow-lg rounded-md py-2 px-5 hover:rotate-6
+        className={`select-none mb-5 text-xl hover:shadow-lg rounded-md py-2 px-5
         ${themes === "PINK" ? "bg-black text-white" : ""}
         ${themes === "DARK" ? "bg-white text-black" : ""}
         ${themes === "BLUE" ? "bg-white text-black" : ""}
         ${themes === "PURPLE" ? "bg-white text-black" : ""}`}
         onClick={handleNewGame}
       >
-        New Game
+        {t('newGame')}
       </button>
     </div>
   );

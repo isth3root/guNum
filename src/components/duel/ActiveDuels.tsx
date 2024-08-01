@@ -3,7 +3,8 @@ import { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
 import useActiveDuels from "../../hooks/useActiveDuels";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
+import i18n from "../../utils/i18n";
 interface User {
   _id: string;
   username: string;
@@ -20,6 +21,7 @@ interface ActiveProps {
 }
 
 const ActiveDuels: React.FC<ActiveProps> = ({ users }) => {
+  const {t} = useTranslation()
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { duels: activeDuels } = useActiveDuels(user!.username);
@@ -33,11 +35,11 @@ const ActiveDuels: React.FC<ActiveProps> = ({ users }) => {
   return (
     <div>
       {activeDuels.length === 0 ? (
-        <p className={`text-center text-3xl font-semibold font-Teko py-5
+        <p className={`text-center py-5 ${i18n.language === 'en' ? "text-3xl font-semibold font-Teko" : "font-Yekan text-2xl"}
             ${theme === "PINK" ? "text-black" : ""}
             ${theme === "DARK" || theme === "BLUE" || theme === "PURPLE" ? "text-white" : ""}
         `}>
-          You have no active duel
+          {t('active message')}
         </p>
       ) : (
         <div className="flex flex-col gap-5">
@@ -72,7 +74,7 @@ const ActiveDuels: React.FC<ActiveProps> = ({ users }) => {
                     onClick={() => handlePlay(duel)}
                     disabled={isDisabled}
                   >
-                    {isDisabled ? "Played" : "Play"}
+                    {isDisabled ? i18n.language === 'en' ? "Played" : "بازی شده" : i18n.language === 'en' ? "Play" : "شروع"}
                   </button>
                 </div>
               </div>

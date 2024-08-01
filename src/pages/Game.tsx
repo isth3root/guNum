@@ -10,7 +10,11 @@ import GameGrid from "../components/common/GameGrid";
 import GameControls from "../components/common/GameControls";
 import ContextMenu from "../components/common/ContextMenu";
 
+import { useTranslation } from "react-i18next";
+import i18n from "../utils/i18n";
+
 const Game = () => {
+  const {t} = useTranslation()
   const [themes] = useState<"PINK" | "DARK" | "PURPLE" | "BLUE">(
     () => {
       const storedTheme = localStorage.getItem("theme");
@@ -70,7 +74,6 @@ const Game = () => {
     const newNumbers = Array.from({ length: maxNumber }, (_, i) => i + 1);
     setNumbers(newNumbers);
 
-    // Conditional shuffling based on difficulty
     if (difficulty === "EASY") {
       setShuffledIndices(Array.from({ length: maxNumber }, (_, i) => i));
     } else if (difficulty === "MEDIUM") {
@@ -171,19 +174,24 @@ const Game = () => {
           <div className="flex flex-col items-center gap-5">
             <div className="w-full flex justify-center mt-5 mb-10">
               <Link to={"/"} className="">
-                <p className="underline text-2xl animate-pulse font-semibold">
-                  Home
+                <p className={`underline text-2xl animate-pulse font-semibold ${i18n.language === 'en' ? "" : "font-Yekan"}`}>
+                  {t('Home')}
                 </p>
               </Link>
             </div>
           </div>
-
-          <div className="text-3xl select-none">
+            {i18n.language === 'en' ? <div className="text-3xl select-none">
             Find the special{" "}
             <span className="italic tracking-wider uppercase font-bold text-red-500">
               number
             </span>
-          </div>
+          </div> : <div className="text-3xl select-none font-Yekan"> 
+            <span className="font-bold text-red-500">
+              عدد {""}
+            </span>
+            خاص را بیابید
+          </div>}
+          
 
           <GameGrid
             numbers={numbers}
@@ -203,17 +211,17 @@ const Game = () => {
         </div>
 
         <Modal
-          title="Select Difficulty"
+          title={i18n.language === 'en' ? "Choose difficulty" : "انتخاب سطح"}
           open={isDifficultyModalVisible}
           footer={null}
           onCancel={handleCancel}
         >
           <div className="flex flex-col items-center gap-4">
-            <Button onClick={() => handleDifficultyChange("EASY")}>Easy</Button>
+            <Button onClick={() => handleDifficultyChange("EASY")}>{t('Easy')}</Button>
             <Button onClick={() => handleDifficultyChange("MEDIUM")}>
-              Medium
+              {t('Medium')}
             </Button>
-            <Button onClick={() => handleDifficultyChange("HARD")}>Hard</Button>
+            <Button onClick={() => handleDifficultyChange("HARD")}>{t('Hard')}</Button>
           </div>
         </Modal>
       </div>

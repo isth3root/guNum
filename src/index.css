@@ -10,3 +10,21 @@
     src: url(./assets/fonts/Teko.ttf) format("truetype");
   }
 }
+
+@layer base {
+  @font-face {
+    font-family: "Yekan";
+    font-style: normal;
+    font-display: swap;
+    src: url(./assets/fonts/Yekan.ttf) format("truetype");
+  }
+}
+
+@layer base {
+  @font-face {
+    font-family: "BYekan+";
+    font-style: normal;
+    font-display: swap;
+    src: url(./assets/fonts/BYekan+.ttf) format("truetype");
+  }
+}

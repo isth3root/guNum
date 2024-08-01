@@ -7,6 +7,8 @@ import { useSortedUsers } from '../hooks/useSortedUsers';
 import DifficultyDropdown from '../components/common/DifficultyDropDown';
 import LeaderBoardList from '../components/LeaderBoardList';
 
+import { useTranslation } from 'react-i18next';
+import i18n from '../utils/i18n';
 interface User {
   _id: string;
   username: string;
@@ -19,6 +21,7 @@ interface User {
 }
 
 const LeaderBoard = () => {
+  const {t} = useTranslation()
   const [themes] = useState<'PINK' | 'DARK' | 'PURPLE' | 'BLUE'>(
     () => {
       const storedTheme = localStorage.getItem('theme');
@@ -32,7 +35,7 @@ const LeaderBoard = () => {
     setDifficulty(difficulty);
   };
 
-  const { users, getSortedUsers, error } = useSortedUsers();
+  const { users, getSortedUsers } = useSortedUsers();
 
   useEffect(() => {
     getSortedUsers(difficulty);
@@ -67,12 +70,12 @@ const LeaderBoard = () => {
       <div className="flex justify-center py-4">
         <Link to={'/'} className="underline text-3xl">
           <p className="hover:rotate-2 font-semibold animate-pulse flex justify-center">
-            Let's Play
+            {t('Home')}
           </p>
         </Link>
       </div>
-      <div className="flex justify-center items-center gap-2 mt-5">
-        <h1 className="text-2xl">Sort By :</h1>
+      <div dir={i18n.language === 'en' ? "ltr" : "rtl"} className="flex justify-center items-center gap-2 mt-5">
+        <h1 className="text-2xl">{t('sort')} :</h1>
         <DifficultyDropdown
           difficulty={difficulty}
           handleDifficultyChange={handleDifficultyChange}
@@ -80,9 +83,8 @@ const LeaderBoard = () => {
       </div>
 
       <div className="mt-10 px-1 sm:px-60">
-        {error && <p>Error loading users: {error}</p>}
         <LeaderBoardList
-          users={users} // Use sorted users fetched from the backend
+          users={users} 
           themes={themes}
           difficulty={difficulty}
           currentUser={user}

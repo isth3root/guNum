@@ -7,7 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily : {
-        Teko : ["Teko", 'sans-serif']
+        Teko : ["Teko", 'sans-serif'],
+        Yekan : ["Yekan", 'sans-serif'],
+        BYekan : ['BYekan+', 'sans-serif']
       },
       colors: {
         greenWinner : "#06D001",

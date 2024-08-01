@@ -3,11 +3,12 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import useRecordDuelGuesses from "../hooks/useRecordDuelGuesses";
 import GameGrid from "../components/common/GameGrid";
-import ThemeDropdown from "../components/common/ThemeDropDown";
+import { useTranslation } from "react-i18next";
 
 type Theme = "PINK" | "DARK" | "PURPLE" | "BLUE";
 
 const DuelGame = () => {
+  const {t} = useTranslation()
   const { duelId } = useParams();
   const location = useLocation();
   const { difficulty } = location.state;
@@ -20,14 +21,13 @@ const DuelGame = () => {
   const [gameOver, setGameOver] = useState(false);
   const [highlightCorrectNumber, setHighlightCorrectNumber] = useState(false);
   const { user } = useContext(AuthContext);
-  const [themes, setThemes] = useState<Theme>(() => {
+  const [themes] = useState<Theme>(() => {
     const storedTheme = sessionStorage.getItem("theme") as Theme;
     return ["PINK", "DARK", "PURPLE", "BLUE"].includes(storedTheme) ? storedTheme : "DARK";
   });
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the game is completed
     const isGameCompleted = sessionStorage.getItem(`gameCompleted-${duelId}`);
 
     if (isGameCompleted) {
@@ -71,7 +71,7 @@ const DuelGame = () => {
 
   useEffect(() => {
     if (!gameOver) {
-      // Store the game state only if the game is not over
+
       const state = {
         numbers,
         shuffledIndices,
@@ -83,7 +83,6 @@ const DuelGame = () => {
       };
       sessionStorage.setItem(`duelGameState-${duelId}`, JSON.stringify(state));
     } else {
-      // Clean up session storage when the game is over
       sessionStorage.removeItem(`duelGameState-${duelId}`);
     }
   }, [
@@ -123,11 +122,6 @@ const DuelGame = () => {
     }
   };
 
-  const handleThemeChange = (theme: Theme) => {
-    setThemes(theme);
-    sessionStorage.setItem("theme", theme);
-  };
-
   return (
     <div
       className={`flex flex-col min-h-screen items-center justify-around py-5 px-5 font-Teko
@@ -137,9 +131,6 @@ const DuelGame = () => {
         ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
     `}
     >
-      <div className="mb-10">
-        <ThemeDropdown themes={themes} handleThemeChange={handleThemeChange} />
-      </div>
       {!gameOver && (
         <div>
           <GameGrid
@@ -160,7 +151,7 @@ const DuelGame = () => {
               ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
             `}
       >
-        Guess Count : {guessCount}
+        {t('guessCount')} : {guessCount}
       </div>
     </div>
   );

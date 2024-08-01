@@ -4,7 +4,8 @@ import AuthContext from "../../context/AuthContext";
 import useDuelRequests from "../../hooks/useDuelRequests";
 import useAcceptDuelRequest from "../../hooks/useAcceptDuel";
 import useDenyDuelRequest from "../../hooks/useDenyDuel";
-
+import { useTranslation } from "react-i18next";
+import i18n from "../../utils/i18n";
 interface User {
   _id: string;
   username: string;
@@ -21,6 +22,7 @@ interface RequestProps {
 }
 
 const DuelRequests: React.FC<RequestProps> = ({ users }) => {
+  const { t } = useTranslation()
   const { user } = useContext(AuthContext);
   const { requests, refetch: refetchRequests } = useDuelRequests(user!.username);
 
@@ -41,11 +43,11 @@ const DuelRequests: React.FC<RequestProps> = ({ users }) => {
   return (
     <div className="">
       {requests.length === 0 ? (
-        <p className={`text-center text-3xl font-semibold font-Teko py-5
+        <p className={`text-center py-5 ${i18n.language === 'en' ? "text-3xl font-semibold font-Teko" : "font-Yekan text-2xl"}
             ${theme === "PINK" ? "text-black" : ""}
             ${theme === "DARK" || theme === "BLUE" || theme === "PURPLE" ? "text-white" : ""}
         `}>
-          You have no current requests.
+          {t('request message')}
         </p>
       ) : (
         <div className="flex flex-col gap-5">
@@ -65,13 +67,13 @@ const DuelRequests: React.FC<RequestProps> = ({ users }) => {
                   onClick={() => handleAcceptDuel(request._id)}
                   className="text-2xl bg-greenWinner text-white px-3 rounded-md"
                 >
-                  Accept
+                  {t('accept')}
                 </button>
                 <button
                   onClick={() => handleDeny(request._id)}
                   className="text-2xl bg-redLoser text-white px-3 rounded-md"
                 >
-                  Deny
+                  {t('deny')}
                 </button>
               </div>
             </div>
