@@ -1,25 +1,20 @@
-import { DuelRequest } from "../../types";
+// ========== PACKAGES ========== \\
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
+
+// ========== TYPES & UTILS ========== \\
+import { DuelRequest } from "../../types";
+import { RequestProps } from "../../types";
+import i18n from "../../utils/i18n";
+
+// ========== CONTEXTES ========== \\
 import AuthContext from "../../context/AuthContext";
+
+// ========== HOOKS ========== \\
 import useDuelRequests from "../../hooks/useDuelRequests";
 import useAcceptDuelRequest from "../../hooks/useAcceptDuel";
 import useDenyDuelRequest from "../../hooks/useDenyDuel";
-import { useTranslation } from "react-i18next";
-import i18n from "../../utils/i18n";
-interface User {
-  _id: string;
-  username: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
 
-interface RequestProps {
-  users: User[];
-}
 
 const DuelRequests: React.FC<RequestProps> = ({ users }) => {
   const { t } = useTranslation()

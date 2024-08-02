@@ -1,24 +1,18 @@
-import { Duel } from "../../types";
+// ========== PACKAGES ========== \\
 import { useContext } from "react";
-import AuthContext from "../../context/AuthContext";
-import useActiveDuels from "../../hooks/useActiveDuels";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import i18n from "../../utils/i18n";
-interface User {
-  _id: string;
-  username: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
 
-interface ActiveProps {
-  users: User[];
-}
+// ========== TYPES & UTILS ========== \\
+import { Duel } from "../../types";
+import { ActiveProps } from "../../types";
+import i18n from "../../utils/i18n";
+
+// ========== CONTEXTES ========== \\
+import AuthContext from "../../context/AuthContext";
+
+// ========== HOOKS ========== \\
+import useActiveDuels from "../../hooks/useActiveDuels";
 
 const ActiveDuels: React.FC<ActiveProps> = ({ users }) => {
   const {t} = useTranslation()

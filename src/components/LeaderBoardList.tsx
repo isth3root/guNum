@@ -1,24 +1,12 @@
+// ========== PACKAGES ========== \\
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-interface User {
-  _id: string;
-  username: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
 
-interface LeaderBoardListProps {
-  users: User[];
-  themes: "PINK" | "DARK" | "PURPLE" | "BLUE";
-  difficulty: "EASY" | "MEDIUM" | "HARD" | "DuelXP";
-  currentUser: User | null;
-  getScoreByDifficulty: (user: User, difficulty: "EASY" | "MEDIUM" | "HARD" | "DuelXP") => number;
-}
+// ========== TYPES & UTILS ========== \\
+import { User } from "../types";
+import { LeaderBoardListProps } from "../types";
+
 
 const LeaderBoardList: React.FC<LeaderBoardListProps> = ({
   users,
@@ -33,14 +21,10 @@ const LeaderBoardList: React.FC<LeaderBoardListProps> = ({
       const scoreA = getScoreByDifficulty(a, difficulty);
       const scoreB = getScoreByDifficulty(b, difficulty);
 
-      if (difficulty === "DuelXP") {
-        return scoreB - scoreA;
-      } else {
-        return scoreA - scoreB;
-      }
+      return difficulty === "DuelXP" ? scoreB - scoreA : scoreA - scoreB;
     });
 
-    let rankings = [];
+    let rankings: { rank: number; user: User }[] = [];
     let rank = 1;
     let lastScore = -1;
 
@@ -89,7 +73,7 @@ const LeaderBoardList: React.FC<LeaderBoardListProps> = ({
       <ul className="flex flex-col select-none">
         {rankedUsers.map(({ rank, user }) => (
           <li
-            key={user.username}
+            key={user._id}
             className={`text-3xl border-b-2 py-2 flex gap-5 w-full justify-between px-2 ${
               currentUser?.username === user.username ? "text-red-500" : ""
             }
@@ -100,7 +84,7 @@ const LeaderBoardList: React.FC<LeaderBoardListProps> = ({
             `}
           >
             <div className="w-1/4">{rank}</div>
-            <div className="w-2/4 text-center cursor-pointer " onClick={() => handleUsernameClick(user.username)}>
+            <div className="w-2/4 text-center cursor-pointer" onClick={() => handleUsernameClick(user.username)}>
               {user.username}
             </div>
             <div className="w-1/4 text-right">

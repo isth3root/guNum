@@ -1,11 +1,9 @@
+// ========== PACKAGES ========== \\
 import { useTranslation } from "react-i18next";
+
+// ========== UTILS & TYPES ========== \\
 import i18n from "../../utils/i18n";
-interface GameControlsProps {
-  themes: "PINK" | "DARK" | "PURPLE" | "BLUE";
-  gameOver: boolean;
-  guessCount: number;
-  handleNewGame: () => void;
-}
+import { GameControlsProps } from "../../types";
 
 const GameControls: React.FC<GameControlsProps> = ({
   themes,

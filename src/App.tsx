@@ -1,3 +1,4 @@
+// ========== PACKAGES ========== \\
 import { useContext } from "react";
 import {
   BrowserRouter as Router,
@@ -5,7 +6,11 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
+// ========== CONTEXTES ========== \\
 import AuthContext from "./context/AuthContext";
+
+// ========== PAGES ========== \\
 import Game from "./pages/Game";
 import SignUp from "./pages/SignUp";
 import LeaderBoard from "./pages/LeaderBoard";
@@ -15,6 +20,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import GuWord from "./pages/GuWord";
 import GuNumber from "./pages/GuNumber"
+
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);

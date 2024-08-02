@@ -1,13 +1,10 @@
+// ========== PACKAGES ========== \\
 import { useState } from "react";
-import axiosInstance from "../utils/axiosInstance";
 
-interface AxiosError {
-  response?: {
-    data: {
-      message: string;
-    };
-  };
-}
+// ========== TYPES & UTILS ========== \\
+import axiosInstance from "../utils/axiosInstance";
+import { AxiosError } from "../types";
+
 
 export const useLogout = () => {
   const [loading, setLoading] = useState<boolean>(false);

@@ -1,6 +1,10 @@
+// ========== PACKAGES ========== \\
 import { useState, useEffect, useCallback } from 'react';
+
+// ========== TYPES & UTILS ========== \\
 import axiosInstance from '../utils/axiosInstance';
 import { Duel, ApiResponse } from '../types';
+
 
 const useFinishedDuels = (username: string) => {
   const [duels, setDuels] = useState<Duel[]>([]);

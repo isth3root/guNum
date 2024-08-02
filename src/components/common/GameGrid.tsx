@@ -1,13 +1,8 @@
+// ========== PACKAGES ========== \\
 import React from "react";
 
-interface GameGridProps {
-  numbers: number[];
-  shuffledIndices: number[];
-  crossedNumbers: number[];
-  correctGuess: number | null;
-  handleClick: (index: number) => void;
-  highlightCorrectNumber: boolean;
-}
+// ========== TYPES ========== \\
+import { GameGridProps } from "../../types";
 
 const GameGrid: React.FC<GameGridProps> = ({
   numbers,
@@ -17,6 +12,14 @@ const GameGrid: React.FC<GameGridProps> = ({
   handleClick,
   highlightCorrectNumber,
 }) => {
+  console.log("GameGrid props:", {
+    numbers,
+    shuffledIndices,
+    crossedNumbers,
+    correctGuess,
+    highlightCorrectNumber,
+  });
+
   return (
     <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
       {shuffledIndices.map((index) => {
@@ -41,5 +44,6 @@ const GameGrid: React.FC<GameGridProps> = ({
     </div>
   );
 };
+
 
 export default GameGrid;

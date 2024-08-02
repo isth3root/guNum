@@ -1,17 +1,25 @@
+// ========== PACKAGES ========== \\
 import { useState, useEffect, useContext } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
-import useRecordDuelGuesses from "../hooks/useRecordDuelGuesses";
-import GameGrid from "../components/common/GameGrid";
 import { useTranslation } from "react-i18next";
 
-type Theme = "PINK" | "DARK" | "PURPLE" | "BLUE";
+// ========== TYPES & UTILS ========== \\
+import { Theme } from "../types";
+
+// ========== COMPONENTS ========== \\
+import GameGrid from "../components/common/GameGrid";
+
+// ========== HOOKS ========== \\
+import useRecordDuelGuesses from "../hooks/useRecordDuelGuesses";
+
+// ========== CONTEXTES ========== \\
+import AuthContext from "../context/AuthContext";
 
 const DuelGame = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const { duelId } = useParams();
   const location = useLocation();
-  const { difficulty } = location.state;
+  const { difficulty } = location.state as { difficulty: "EASY" | "MEDIUM" | "HARD" };
   const { recordDuelGuesses } = useRecordDuelGuesses();
   const [numbers, setNumbers] = useState<number[]>([]);
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
@@ -27,15 +35,13 @@ const DuelGame = () => {
   });
   const navigate = useNavigate();
 
+  // Load game state from session storage or initialize new game
   useEffect(() => {
-    const isGameCompleted = sessionStorage.getItem(`gameCompleted-${duelId}`);
-
-    if (isGameCompleted) {
-      navigate("/duel");
-      return;
-    }
+    if (!duelId) return;
 
     const savedState = sessionStorage.getItem(`duelGameState-${duelId}`);
+    console.log("Loaded State from Session Storage:", savedState); // Debugging
+
     if (savedState) {
       const state = JSON.parse(savedState);
       if (state.gameOver) {
@@ -69,32 +75,28 @@ const DuelGame = () => {
     }
   }, [difficulty, duelId, navigate]);
 
+  // Save game state to session storage
   useEffect(() => {
-    if (!gameOver) {
+    if (!duelId) return;
 
-      const state = {
-        numbers,
-        shuffledIndices,
-        crossedNumbers,
-        correctNumber,
-        guessCount,
-        gameOver,
-        highlightCorrectNumber,
-      };
-      sessionStorage.setItem(`duelGameState-${duelId}`, JSON.stringify(state));
-    } else {
+    const state = {
+      numbers,
+      shuffledIndices,
+      crossedNumbers,
+      correctNumber,
+      guessCount,
+      gameOver,
+      highlightCorrectNumber,
+    };
+
+    if (gameOver) {
       sessionStorage.removeItem(`duelGameState-${duelId}`);
+      sessionStorage.setItem(`gameCompleted-${duelId}`, "true");
+    } else {
+      console.log("Saving State to Session Storage:", state); // Debugging
+      sessionStorage.setItem(`duelGameState-${duelId}`, JSON.stringify(state));
     }
-  }, [
-    numbers,
-    shuffledIndices,
-    crossedNumbers,
-    correctNumber,
-    guessCount,
-    gameOver,
-    highlightCorrectNumber,
-    duelId,
-  ]);
+  }, [numbers, shuffledIndices, crossedNumbers, correctNumber, guessCount, gameOver, highlightCorrectNumber, duelId]);
 
   const handleClick = async (index: number) => {
     if (gameOver) return;
@@ -129,7 +131,7 @@ const DuelGame = () => {
         ${themes === "DARK" ? "bg-themeDark text-white" : ""}
         ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
         ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
-    `}
+      `}
     >
       {!gameOver && (
         <div>

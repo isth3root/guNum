@@ -1,17 +1,28 @@
+// ========== PACKAGES ========== \\
 import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Input, Modal, Select, Tabs } from "antd";
-import AuthContext from "../context/AuthContext";
-import { useGetAllUsers } from "../hooks/useGetAllUsers";
-import useSendDuelRequest from "../hooks/useSendDuelRequest";
+import { LuSwords } from "react-icons/lu";
+import { useTranslation } from 'react-i18next';
+
+// ========== COMPONENTS ========== \\
 import DuelRequests from "../components/duel/DuelRequests";
 import ActiveDuels from "../components/duel/ActiveDuels";
 import FinishedDuels from "../components/duel/FinishedDuel";
-import { LuSwords } from "react-icons/lu";
-import { useTranslation } from 'react-i18next';
+
+// ========== TYPES & UTILS ========== \\
 import i18n from "../utils/i18n";
 
+// ========== CONTEXTES ========== \\
+import AuthContext from "../context/AuthContext";
+
+// ========== HOOKS ========== \\
+import { useGetAllUsers } from "../hooks/useGetAllUsers";
+import useSendDuelRequest from "../hooks/useSendDuelRequest";
+
+// ========== STYLES ========== \\
 import "./duel.css";
+
 
 const { Option } = Select;
 const { TabPane } = Tabs;

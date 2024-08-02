@@ -1,25 +1,13 @@
+// ========== PACKAGES ========== \\
 import { useState, useCallback } from 'react';
+
+// ========== TYPES & UTILS ========== \\
 import axiosInstance from "../utils/axiosInstance";
+import { User } from '../types';
+import { UseSortedUsersProps } from '../types';
 
-interface User {
-  _id: string;
-  username: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
 
-interface UseSortedUsersHook {
-  users: User[];
-  getSortedUsers: (difficulty: 'EASY' | 'MEDIUM' | 'HARD' | 'DuelXP') => void;
-  loading: boolean;
-  error: string | null;
-}
-
-export const useSortedUsers = (): UseSortedUsersHook => {
+export const useSortedUsers = (): UseSortedUsersProps => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

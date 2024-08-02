@@ -1,17 +1,23 @@
+// ========== PACKAGES ========== \\
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { theme, Modal, Button } from "antd";
+import { useTranslation } from "react-i18next";
 
-import AuthContext from "../context/AuthContext";
-
-import { useSaveScore } from "../hooks/useSaveScore";
-
+// ========== COMPONENTS ========== \\
 import GameGrid from "../components/common/GameGrid";
 import GameControls from "../components/common/GameControls";
 import ContextMenu from "../components/common/ContextMenu";
 
-import { useTranslation } from "react-i18next";
+// ========== CONTEXTES ========== \\
+import AuthContext from "../context/AuthContext";
+
+// ========== HOOKS ========== \\
+import { useSaveScore } from "../hooks/useSaveScore";
+
+// ========== TYPES & UTILS ========== \\
 import i18n from "../utils/i18n";
+
 
 const Game = () => {
   const {t} = useTranslation()

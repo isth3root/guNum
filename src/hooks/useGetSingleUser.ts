@@ -1,18 +1,11 @@
+// ========== PACKAGES ========== \\
 import { useEffect, useState } from "react";
+
+// ========== TYPES & UTILS ========== \\
 import axiosInstance from "../utils/axiosInstance";
 import axios from "axios";
+import { User } from "../types";
 
-interface User {
-  _id: string;
-  username: string;
-  password: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
 
 const useGetSingleUser = (username: string) => {
   const [singleUser, setSingleUser] = useState<User | null>(null);

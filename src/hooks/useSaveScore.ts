@@ -1,23 +1,11 @@
+// ========== PACKAGES ========== \\
 import { useState } from "react";
+
+// ========== TYPES & UTILS ========== \\
 import axiosInstance from "../utils/axiosInstance";
+import { User } from "../types";
+import { AxiosError } from "../types";
 
-interface User {
-  username: string;
-  password: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-}
-
-interface AxiosError {
-  response?: {
-    data: {
-      message: string;
-    };
-  };
-}
 
 export const useSaveScore = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -45,8 +33,8 @@ export const useSaveScore = () => {
         const parsedUserData = JSON.parse(userData);
 
 
-        if (!parsedUserData.score) {
-          parsedUserData.score = {
+        if (!parsedUserData.numSinglePlayScore) {
+          parsedUserData.numSinglePlayScore = {
             easy: Infinity,
             medium: Infinity,
             hard: Infinity,
@@ -55,13 +43,13 @@ export const useSaveScore = () => {
 
         switch (difficulty) {
           case "EASY":
-            parsedUserData.score.easy = updatedUser.score;
+            parsedUserData.numSinglePlayScore.easy = updatedUser.numSinglePlayScore;
             break;
           case "MEDIUM":
-            parsedUserData.score.medium = updatedUser.score;
+            parsedUserData.numSinglePlayScore.medium = updatedUser.numSinglePlayScore;
             break;
           case "HARD":
-            parsedUserData.score.hard = updatedUser.score;
+            parsedUserData.numSinglePlayScore.hard = updatedUser.numSinglePlayScore;
             break;
           default:
             throw new Error("Invalid difficulty level");

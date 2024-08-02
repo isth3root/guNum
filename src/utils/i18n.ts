@@ -1,7 +1,11 @@
+// ========== PACKAGES ========== \\
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+
+// ========== JSON ========== \\
 import enTranslation from '../locales/en/translation.json'
 import faTranslation from '../locales/fa/translation.json'
+
 
 const storedLanguage = localStorage.getItem('language') || 'en'
 

@@ -1,13 +1,20 @@
+// ========== PACKAGES ========== \\
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { LuSword, LuSwords } from "react-icons/lu";
-import AppContext from "../context/AuthContext";
-import useDuelRequests from "../hooks/useDuelRequests";
-import useActiveDuels from "../hooks/useActiveDuels";
 import { useTranslation } from 'react-i18next';
+import { LuSword, LuSwords } from "react-icons/lu";
+import { Badge } from "antd";
+
+// ========== TYPES & UTILS ========== \\
 import i18n from "../utils/i18n";
 
-import { Badge } from "antd";
+// ========== CONTEXTES ========== \\
+import AppContext from "../context/AuthContext";
+
+// ========== HOOKS ========== \\
+import useDuelRequests from "../hooks/useDuelRequests";
+import useActiveDuels from "../hooks/useActiveDuels";
+
 
 const Home = () => {
   const { t } = useTranslation();
@@ -51,7 +58,10 @@ const Home = () => {
           {t('Single Play')}
           <LuSword className="text-blue-600" />
         </Link>
-        <Link
+            <div className={`flex flex-1 justify-center cursor-not-allowed select-none ${i18n.language === 'en' ? "text-4xl" : "text-3xl font-Yekan"}`}>
+              <h1>{t('notAvailable')}</h1>
+            </div>
+        {/* <Link
           to="/duel"
           className="flex items-center gap-2 text-3xl sm:text-4xl justify-center flex-1 h-screen font-semibold transition-all duration-300"
         >
@@ -73,7 +83,7 @@ const Home = () => {
               <LuSwords className="text-redLoser" />
             </div>
           </div>
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

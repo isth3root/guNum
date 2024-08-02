@@ -1,12 +1,9 @@
+// ========== PACKAGES ========== \\
 import React from "react";
 import { Dropdown, MenuProps } from "antd";
 
-interface DifficultyDropdownProps {
-  difficulty: "EASY" | "MEDIUM" | "HARD" | "DuelXP";
-  handleDifficultyChange: (
-    difficulty: "EASY" | "MEDIUM" | "HARD" | "DuelXP"
-  ) => void;
-}
+// ========== TYPES ========== \\
+import { DifficultyDropdownProps } from "../../types";
 
 const DifficultyDropdown: React.FC<DifficultyDropdownProps> = ({
   difficulty,

@@ -1,10 +1,9 @@
+// ========== PACKAGES ========== \\
 import React from "react";
 import { Dropdown, MenuProps } from "antd";
 
-interface ContextMenuProps {
-  children: React.ReactNode;
-  handleDifficultyChange: (difficulty: "EASY" | "MEDIUM" | "HARD") => void;
-}
+// ========== TYPES ========== \\
+import { ContextMenuProps } from "../../types";
 
 const ContextMenu: React.FC<ContextMenuProps> = ({
   handleDifficultyChange,

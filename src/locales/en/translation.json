@@ -41,5 +41,7 @@
     "A" : "A",
     "B" : "B",
     "M" : "M",
-    "Z" : "Z"
+    "Z" : "Z",
+    "correctWordIs" : "Word is",
+    "notAvailable" : "Not Available"
 }

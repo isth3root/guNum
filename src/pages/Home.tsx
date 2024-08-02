@@ -1,12 +1,16 @@
+// ========== PACKAGES ========== \\
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Popover } from "antd";
 import { AiOutlineArrowUp } from "react-icons/ai";
 import { FiMoon, FiUser } from "react-icons/fi";
 import { MdOutlineLeaderboard } from "react-icons/md";
-import { Popover } from "antd";
 import { BiLogoTelegram } from "react-icons/bi";
 import { useTranslation } from 'react-i18next';
+
+// ========== TYPES & UTILS ========== \\
 import i18n from "../utils/i18n";
+
 
 const Home = () => {
   const { t } = useTranslation();

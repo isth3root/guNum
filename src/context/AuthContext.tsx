@@ -1,26 +1,14 @@
-// context/AuthContext.tsx
-
+// ========== PACKAGES ========== \\
 import React, { createContext, useState, useEffect } from "react";
 
-type User = {
-  _id: string;
-  username: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-};
+// ========== TYPES & UTILS ========== \\
+import { User } from "../types";
+import { UserContextType } from "../types";
 
-type ContextType = {
-  user: User | null;
-  setUser: (user: User | null) => void;
-};
 
 const initialUser: User | null = null;
 
-const AuthContext = createContext<ContextType>({
+const AuthContext = createContext<UserContextType>({
   user: initialUser,
   setUser: () => {},
 });

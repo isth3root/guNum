@@ -1,27 +1,25 @@
+// ========== PACKAGES ========== \\
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import AuthContext from '../context/AuthContext';
-import { useSortedUsers } from '../hooks/useSortedUsers';
-
+// ========== COMPONENTS ========== \\
 import DifficultyDropdown from '../components/common/DifficultyDropDown';
 import LeaderBoardList from '../components/LeaderBoardList';
 
-import { useTranslation } from 'react-i18next';
+// ========== CONTEXTES ========== \\
+import AuthContext from '../context/AuthContext';
+
+// ========== HOOKS ========== \\
+import { useSortedUsers } from '../hooks/useSortedUsers';
+
+// ========== TYPES & UTILS ========== \\
 import i18n from '../utils/i18n';
-interface User {
-  _id: string;
-  username: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
+import { User } from '../types';
+
 
 const LeaderBoard = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const [themes] = useState<'PINK' | 'DARK' | 'PURPLE' | 'BLUE'>(
     () => {
       const storedTheme = localStorage.getItem('theme');
@@ -46,13 +44,13 @@ const LeaderBoard = () => {
   const getScoreByDifficulty = (user: User, difficulty: 'EASY' | 'MEDIUM' | 'HARD' | 'DuelXP') => {
     switch (difficulty) {
       case 'EASY':
-        return user.score.easy;
+        return user.numSinglePlayScore.easy;
       case 'MEDIUM':
-        return user.score.medium;
+        return user.numSinglePlayScore.medium;
       case 'HARD':
-        return user.score.hard;
+        return user.numSinglePlayScore.hard;
       case 'DuelXP':
-        return user.duelXP;
+        return user.numDuelXP;
       default:
         return 0;
     }
@@ -84,7 +82,7 @@ const LeaderBoard = () => {
 
       <div className="mt-10 px-1 sm:px-60">
         <LeaderBoardList
-          users={users} 
+          users={users}
           themes={themes}
           difficulty={difficulty}
           currentUser={user}

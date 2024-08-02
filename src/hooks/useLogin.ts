@@ -1,30 +1,15 @@
+// ========== PACKAGES ========== \\
 import { useState, useContext } from "react";
+
+// ========== TYPES & UTILS ========== \\
+import { User } from "../types";
+import { AxiosError } from "../types";
+import { LoginResponse } from "../types";
 import axiosInstance from "../utils/axiosInstance";
+
+// ========== CONTEXTES ========== \\
 import AppContext from "../context/AuthContext";
 
-interface User {
-  _id: string;
-  username: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
-
-interface AxiosError {
-  response?: {
-    data: {
-      message: string;
-    };
-  };
-}
-
-interface LoginResponse {
-  user: User;
-  token: string;
-}
 
 export const useLogin = () => {
   const [loading, setLoading] = useState<boolean>(false);

@@ -1,10 +1,15 @@
+// ========== PACKAGES ========== \\
 import React, { useState, useEffect } from "react";
 import { Input, message, Dropdown, Menu } from "antd";
 import type { MenuProps } from "antd";
+import { useTranslation } from "react-i18next";
+
+// ========== TYPES & UTILS ========== \\
+import i18n from "../utils/i18n";
+
+// ========== HOOKS ========== \\
 import { useLogin } from "../hooks/useLogin";
 import { useSignup } from "../hooks/useSignup";
-import { useTranslation } from "react-i18next";
-import i18n from "../utils/i18n";
 
 interface SignUpProps {}
 

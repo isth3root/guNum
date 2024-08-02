@@ -1,15 +1,13 @@
+// ========== PACKAGES ========== \\
 import React, { createContext, useState, useEffect } from "react";
 
-type Theme = "DARK" | "PINK" | "BLUE" | "PURPLE";
-
-type ContextType = {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-};
+// ========== TYPES & UTILS ========== \\
+import { Theme } from "../types";
+import { ThemeContextType } from "../types";
 
 const initTheme: Theme = "DARK";
 
-const ThemeContext = createContext<ContextType>({
+const ThemeContext = createContext<ThemeContextType>({
   theme: initTheme,
   setTheme: () => {},
 });

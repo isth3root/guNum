@@ -1,11 +1,19 @@
+// ========== PACKAGES ========== \\
 import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
-import { useDeleteAccount } from "../hooks/useDeleteAccount";
 import { Modal, Input } from "antd";
-import { useLogout } from "../hooks/useLogout";
 import { useTranslation } from "react-i18next";
+
+// ========== TYPES & UTILS ========== \\
 import i18n from "../utils/i18n";
+
+// ========== CONTEXTES ========== \\
+import AuthContext from "../context/AuthContext";
+
+// ========== HOOKS ========== \\
+import { useDeleteAccount } from "../hooks/useDeleteAccount";
+import { useLogout } from "../hooks/useLogout";
+
 
 const Profile = () => {
   const { t } = useTranslation();

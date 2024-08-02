@@ -1,15 +1,10 @@
+// ========== PACKAGES ========== \\
 import { useState } from "react";
-import axiosInstance from "../utils/axiosInstance";
 
-interface UseRecordDuelGuessesResponse {
-  recordDuelGuesses: (
-    duelId: string,
-    username: string,
-    guesses: number
-  ) => Promise<void>;
-  loading: boolean;
-  error: string | null;
-}
+// ========== TYPES & UTILS ========== \\
+import axiosInstance from "../utils/axiosInstance";
+import { UseRecordDuelGuessesResponse } from "../types";
+
 
 const useRecordDuelGuesses = (): UseRecordDuelGuessesResponse => {
   const [loading, setLoading] = useState(false);

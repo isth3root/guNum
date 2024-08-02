@@ -1,5 +1,9 @@
+// ========== PACKAGES ========== \\
 import { useState } from "react";
+
+// ========== TYPES & UTILS ========== \\
 import axiosInstance from "../utils/axiosInstance";
+
 
 const useDeleteDuel = () => {
   const [loading, setLoading] = useState(false);

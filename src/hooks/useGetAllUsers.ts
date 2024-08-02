@@ -1,25 +1,11 @@
+// ========== PACKAGES ========== \\
 import { useState, useCallback } from "react";
+
+// ========== TYPES & UTILS ========== \\
 import axiosInstance from "../utils/axiosInstance";
+import { User } from "../types";
+import { AxiosError } from "../types";
 
-interface User {
-  _id: string;
-  username: string;
-  password: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
-
-interface AxiosError {
-  response?: {
-    data: {
-      message: string;
-    };
-  };
-}
 
 export const useGetAllUsers = () => {
   const [users, setUsers] = useState<User[]>([]);

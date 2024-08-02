@@ -1,9 +1,16 @@
+// ========== PACKAGES ========== \\
 import React, { useState, useEffect, useRef } from 'react';
-import { useGetWord } from '../hooks/useGetWord';
-import { message } from 'antd';
 import { Link } from 'react-router-dom';
+import { message } from 'antd';
 import { useTranslation } from 'react-i18next';
+
+// ========== TYPES & UTILS ========== \\
 import i18n from '../utils/i18n';
+
+// ========== HOOKS ========== \\
+import { useGetWord } from '../hooks/useGetWord';
+
+
 
 const subjects = ['cars', 'countries', 'footballplayer', 'animals', 'technology'];
 
@@ -191,7 +198,7 @@ const GuWord: React.FC = () => {
                   </h1>
                 </div>
                 <div className='mb-6 text-center'>
-                  <div className={`flex justify-center px-5 flex-wrap`} dir={isPersian ? 'rtl' : 'ltr'}>
+                  <div className={`flex justify-center px-5 flex-wrap`} dir={selectedLanguage === 'Persian' ? 'rtl' : 'ltr'}>
                     {displayWord.split('').map((letter, index) => (
                       <span key={index} className="text-3xl mx-1 uppercase tracking-tighter">
                         {letter}
@@ -199,12 +206,17 @@ const GuWord: React.FC = () => {
                     ))}
                   </div>
                 </div>
-                <div className="mb-4 text-center">
-                  <h1 dir={isPersian ? 'rtl' : 'ltr'} className='text-3xl'>{isPersian ? "حروف اشتباه :" : "Wrong Letters : "}</h1>
-                  <div className="text-3xl uppercase text-red-400">
-                    {Array.from(wrongLetters).join(' - ')}
+                {gameOver ? (
+                  <h1 dir={isPersian ? 'rtl' : 'ltr'} className={`text-center text-3xl ${isPersian ? "font-Yekan" : "font-Teko"}`}>{t('correctWordIs')} : <span className='text-red-500'>{word}</span></h1>
+                ) : (
+                  <div className="mb-4 text-center">
+                    <h1 dir={isPersian ? 'rtl' : 'ltr'} className='text-3xl'>{isPersian ? "حروف اشتباه :" : "Wrong Letters : "}</h1>
+                    <div className="text-3xl uppercase text-red-400">
+                      {Array.from(wrongLetters).join(' - ')}
+                    </div>
                   </div>
-                </div>
+                )}
+                
                 <form onSubmit={handleFormSubmit}>
                   <input
                     type="text"

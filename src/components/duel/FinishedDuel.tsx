@@ -1,25 +1,20 @@
-import { Duel } from "../../types";
-import { AiOutlineDelete } from "react-icons/ai";
+// ========== PACKAGES & ICONS ========== \\
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { AiOutlineDelete } from "react-icons/ai";
+
+// ========== TYPES & UTILS ========== \\
+import { Duel } from "../../types";
+import { FinishedProps } from "../../types";
+import i18n from "../../utils/i18n";
+
+// ========== CONTEXTES ========== \\
 import AuthContext from "../../context/AuthContext";
+
+// ========== HOOKS ========== \\
 import useFinishedDuels from "../../hooks/useFinishedDuels";
 import useDeleteDuel from "../../hooks/useDeleteDuel";
-import { useTranslation } from "react-i18next";
-import i18n from "../../utils/i18n";
-interface User {
-  _id: string;
-  username: string;
-  score: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  duelXP: number;
-}
 
-interface FinishedProps {
-  users: User[];
-}
 
 const FinishedDuels: React.FC<FinishedProps> = ({ users }) => {
   const {t} = useTranslation()
