@@ -58,7 +58,7 @@ const Home = () => {
           {t('Single Play')}
           <LuSword className="text-blue-600" />
         </Link>
-            <div className={`flex flex-1 justify-center cursor-not-allowed select-none ${i18n.language === 'en' ? "text-4xl" : "text-3xl font-Yekan"}`}>
+            <div className={`flex flex-1 justify-center cursor-not-allowed select-none ${i18n.language === 'en' ? "text-4xl" : "text-2xl font-Yekan"}`}>
               <h1>{t('notAvailable')}</h1>
             </div>
         {/* <Link
