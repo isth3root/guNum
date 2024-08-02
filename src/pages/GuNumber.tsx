@@ -1,19 +1,20 @@
 // ========== PACKAGES ========== \\
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { LuSword, LuSwords } from "react-icons/lu";
-import { Badge } from "antd";
+import { LuSword } from "react-icons/lu";
+// LuSwords
+// import { Badge } from "antd";
 
 // ========== TYPES & UTILS ========== \\
 import i18n from "../utils/i18n";
 
 // ========== CONTEXTES ========== \\
-import AppContext from "../context/AuthContext";
+// import AppContext from "../context/AuthContext";
 
 // ========== HOOKS ========== \\
-import useDuelRequests from "../hooks/useDuelRequests";
-import useActiveDuels from "../hooks/useActiveDuels";
+// import useDuelRequests from "../hooks/useDuelRequests";
+// import useActiveDuels from "../hooks/useActiveDuels";
 
 
 const Home = () => {
@@ -24,20 +25,20 @@ const Home = () => {
       return (storedTheme as "PINK" | "DARK" | "PURPLE" | "BLUE") || "DARK";
     }
   );
-  const { user } = useContext(AppContext);
-  const { requests } = useDuelRequests(user!.username);
-  const { duels } = useActiveDuels(user!.username);
-  const [requestsCount, setRequestsCount] = useState<number>(0);
-  const [duelsCount, setDuelsCount] = useState<number>(0);
+  // const { user } = useContext(AppContext);
+  // const { requests } = useDuelRequests(user!.username);
+  // const { duels } = useActiveDuels(user!.username);
+  // const [requestsCount, setRequestsCount] = useState<number>(0);
+  // const [duelsCount, setDuelsCount] = useState<number>(0);
 
-  useEffect(() => {
-    if (requests) {
-      setRequestsCount(requests.length);
-    }
-    if (duels) {
-      setDuelsCount(duels.length)
-    }
-  });
+  // useEffect(() => {
+  //   if (requests) {
+  //     setRequestsCount(requests.length);
+  //   }
+  //   if (duels) {
+  //     setDuelsCount(duels.length)
+  //   }
+  // });
 
   return (
     <div
