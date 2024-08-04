@@ -79,17 +79,16 @@ const Game = () => {
     }
     const newNumbers = Array.from({ length: maxNumber }, (_, i) => i + 1);
     setNumbers(newNumbers);
-
-    if (difficulty === "EASY") {
-      setShuffledIndices(Array.from({ length: maxNumber }, (_, i) => i));
-    } else if (difficulty === "MEDIUM") {
+  
+    if (difficulty === "EASY" || difficulty === "MEDIUM") {
       setShuffledIndices(Array.from({ length: maxNumber }, (_, i) => i));
     } else if (difficulty === "HARD") {
       setShuffledIndices(shuffleArray(Array.from({ length: maxNumber }, (_, i) => i)));
     }
-
+  
     setToGuessNumber(Math.floor(Math.random() * maxNumber) + 1);
   }, [difficulty]);
+  
 
   const handleClick = async (i: number) => {
     if (gameOver) return;

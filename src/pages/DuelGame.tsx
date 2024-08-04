@@ -1,25 +1,16 @@
-// ========== PACKAGES ========== \\
 import { useState, useEffect, useContext } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-
-// ========== TYPES & UTILS ========== \\
-import { Theme } from "../types";
-
-// ========== COMPONENTS ========== \\
-import GameGrid from "../components/common/GameGrid";
-
-// ========== HOOKS ========== \\
-import useRecordDuelGuesses from "../hooks/useRecordDuelGuesses";
-
-// ========== CONTEXTES ========== \\
 import AuthContext from "../context/AuthContext";
+import useRecordDuelGuesses from "../hooks/useRecordDuelGuesses";
+import GameGrid from "../components/common/GameGrid";
+import { useTranslation } from 'react-i18next';
+type Theme = "PINK" | "DARK" | "PURPLE" | "BLUE";
 
 const DuelGame = () => {
-  const { t } = useTranslation();
+  const {t} = useTranslation()
   const { duelId } = useParams();
   const location = useLocation();
-  const { difficulty } = location.state as { difficulty: "EASY" | "MEDIUM" | "HARD" };
+  const { difficulty } = location.state;
   const { recordDuelGuesses } = useRecordDuelGuesses();
   const [numbers, setNumbers] = useState<number[]>([]);
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
@@ -34,69 +25,56 @@ const DuelGame = () => {
     return ["PINK", "DARK", "PURPLE", "BLUE"].includes(storedTheme) ? storedTheme : "DARK";
   });
   const navigate = useNavigate();
-
-  // Load game state from session storage or initialize new game
+  
   useEffect(() => {
-    if (!duelId) return;
-
-    const savedState = sessionStorage.getItem(`duelGameState-${duelId}`);
-    console.log("Loaded State from Session Storage:", savedState); // Debugging
-
-    if (savedState) {
-      const state = JSON.parse(savedState);
-      if (state.gameOver) {
-        sessionStorage.setItem(`gameCompleted-${duelId}`, "true");
-        navigate("/duel");
-        return;
-      }
-      setNumbers(state.numbers);
-      setShuffledIndices(state.shuffledIndices);
-      setCrossedNumbers(state.crossedNumbers);
-      setCorrectNumber(state.correctNumber);
-      setGuessCount(state.guessCount);
-      setGameOver(state.gameOver);
-      setHighlightCorrectNumber(state.highlightCorrectNumber);
-    } else {
-      let range: [number, number] = [1, 50];
-      switch (difficulty) {
-        case "MEDIUM":
-          range = [1, 100];
-          break;
-        case "HARD":
-          range = [1, 200];
-          break;
-      }
-      const nums = Array.from({ length: range[1] - range[0] + 1 }, (_, i) => i + range[0]);
-      const indices = nums.map((_, index) => index).sort(() => Math.random() - 0.5);
-      const randomCorrectNumber = nums[Math.floor(Math.random() * nums.length)];
-      setNumbers(nums);
-      setShuffledIndices(indices);
-      setCorrectNumber(randomCorrectNumber);
+  
+    let range: [number, number] = [1, 50];
+    switch (difficulty) {
+      case "MEDIUM":
+        range = [1, 100];
+        break;
+      case "HARD":
+        range = [1, 200];
+        break;
+      default:
+        range = [1, 50];
     }
-  }, [difficulty, duelId, navigate]);
+  
+    const nums = Array.from({ length: range[1] - range[0] + 1 }, (_, i) => i + range[0]);
+    const indices = nums.map((_, index) => index).sort(() => Math.random() - 0.5);
+    const randomCorrectNumber = nums[Math.floor(Math.random() * nums.length)];
+  
+    setNumbers(nums);
+    setShuffledIndices(indices);
+    setCorrectNumber(randomCorrectNumber);
+  }, [difficulty, navigate]);
+  
 
-  // Save game state to session storage
   useEffect(() => {
-    if (!duelId) return;
-
-    const state = {
-      numbers,
-      shuffledIndices,
-      crossedNumbers,
-      correctNumber,
-      guessCount,
-      gameOver,
-      highlightCorrectNumber,
-    };
-
-    if (gameOver) {
-      sessionStorage.removeItem(`duelGameState-${duelId}`);
-      sessionStorage.setItem(`gameCompleted-${duelId}`, "true");
-    } else {
-      console.log("Saving State to Session Storage:", state); // Debugging
+    if (!gameOver) {
+      const state = {
+        numbers,
+        shuffledIndices,
+        crossedNumbers,
+        correctNumber,
+        guessCount,
+        gameOver,
+        highlightCorrectNumber,
+      };
       sessionStorage.setItem(`duelGameState-${duelId}`, JSON.stringify(state));
+    } else {
+      sessionStorage.removeItem(`duelGameState-${duelId}`);
     }
-  }, [numbers, shuffledIndices, crossedNumbers, correctNumber, guessCount, gameOver, highlightCorrectNumber, duelId]);
+  }, [
+    numbers,
+    shuffledIndices,
+    crossedNumbers,
+    correctNumber,
+    guessCount,
+    gameOver,
+    highlightCorrectNumber,
+    duelId,
+  ]);
 
   const handleClick = async (index: number) => {
     if (gameOver) return;
@@ -123,6 +101,7 @@ const DuelGame = () => {
       setGuessCount(guessCount + 1);
     }
   };
+  
 
   return (
     <div
@@ -131,10 +110,9 @@ const DuelGame = () => {
         ${themes === "DARK" ? "bg-themeDark text-white" : ""}
         ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}
         ${themes === "PURPLE" ? "bg-themePurple text-white" : ""}
-      `}
+    `}
     >
       {!gameOver && (
-        <div>
           <GameGrid
             numbers={numbers}
             shuffledIndices={shuffledIndices}
@@ -143,7 +121,6 @@ const DuelGame = () => {
             handleClick={handleClick}
             highlightCorrectNumber={highlightCorrectNumber}
           />
-        </div>
       )}
       <div
         className={`text-4xl sticky bottom-0 w-full left-0 z-20 text-center py-5

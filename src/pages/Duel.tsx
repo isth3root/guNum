@@ -40,7 +40,15 @@ const Duels = () => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    getAllUsers();
+    const fetchUsers = async () => {
+      try {
+        await getAllUsers();
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
   }, [getAllUsers]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -66,7 +74,7 @@ const Duels = () => {
 
   return (
     <div
-      className={`flex flex-col min-h-screen items-center py-5 ${i18n.language === 'en' ? "font-Teko" : "font-Yekan"} px-5
+      className={`flex flex-col min-h-screen items-center py-5 ${i18n.language === 'en' ? "font-Teko" : "font-Yekan"} px-5 overflow-hidden
         ${themes === "PINK" ? "bg-themePink text-black" : ""}
         ${themes === "DARK" ? "bg-themeDark text-white" : ""}
         ${themes === "BLUE" ? "bg-themeBlue text-white" : ""}

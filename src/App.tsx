@@ -1,5 +1,5 @@
 // ========== PACKAGES ========== \\
-import { useContext } from "react";
+import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
   Routes,

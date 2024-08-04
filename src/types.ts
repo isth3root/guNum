@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface Duel {
   _id: string;
   sender: string;

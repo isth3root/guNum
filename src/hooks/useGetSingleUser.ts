@@ -32,9 +32,10 @@ const useGetSingleUser = (username: string) => {
     };
 
     if (username) {
-      fetchUser();
+      fetchUser().catch(error => {
+        console.error('Error fetching user:', error);
+      });
     } else {
-
       setSingleUser(null);
       setError(null);
       setLoading(false);

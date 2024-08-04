@@ -52,7 +52,7 @@ export const useSaveScore = () => {
             parsedUserData.numSinglePlayScore.hard = updatedUser.numSinglePlayScore;
             break;
           default:
-            throw new Error("Invalid difficulty level");
+            console.error("Invalid difficulty level");
         }
 
         localStorage.setItem("user", JSON.stringify(parsedUserData));

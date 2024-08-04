@@ -31,7 +31,13 @@ const useActiveDuels = (username: string) => {
   }, [username]);
 
   useEffect(() => {
-    fetchDuels();
+    const fetchData = async () => {
+      await fetchDuels();
+    };
+
+    fetchData().catch(error => {
+      console.error('Error fetching duels:', error);
+    });
   }, [fetchDuels, refresh]);
 
   const refetch = () => setRefresh((prev) => !prev);

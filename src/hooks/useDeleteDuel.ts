@@ -15,7 +15,7 @@ const useDeleteDuel = () => {
     setError(null);
 
     try {
-      axiosInstance.post("/duel/delete", { duelId });
+      await axiosInstance.post("/duel/delete", { duelId });
     } catch (err) {
       console.error(err);
       setError("Failed to accept duel request");

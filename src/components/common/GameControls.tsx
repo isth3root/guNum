@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 // ========== UTILS & TYPES ========== \\
 import i18n from "../../utils/i18n";
 import { GameControlsProps } from "../../types";
+import React from "react";
 
 const GameControls: React.FC<GameControlsProps> = ({
   themes,
